@@ -1,0 +1,36 @@
+generated: '2026-07-19'
+method: searched
+source: openapi/heymilo-openapi-original.json
+docs: https://docs.heymilo.ai/api-reference/public-api/documentation
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+  notes: >-
+    The HeyMilo Public REST API authenticates every request with an X-API-KEY
+    header. One API key maps to one workspace, is shared per workspace, and does
+    not expire. Requests without a valid key return 401 Unauthorized. The
+    separate hosted MCP server (https://mcp.heymilo.ai/mcp) additionally accepts
+    OAuth 2.1 (Sign in with HeyMilo) or an API key, both passed as
+    Authorization: Bearer <token>.
+schemes:
+- name: ApiKeyAuth
+  type: apiKey
+  in: header
+  parameter: X-API-KEY
+  description: API key for authentication. Pass your key in the X-API-KEY header.
+  sources:
+  - openapi/heymilo-openapi-original.json
+- name: MCPBearer
+  type: http
+  scheme: bearer
+  applies_to: https://mcp.heymilo.ai/mcp
+  description: >-
+    MCP server bearer token — either an OAuth 2.1 access token (authorization_code
+    + PKCE S256, refresh_token; scopes openid, profile, email, offline_access) or
+    a HeyMilo API key. OAuth server metadata is published at
+    https://mcp.heymilo.ai/.well-known/oauth-authorization-server.
+  sources:
+  - https://docs.heymilo.ai/api-reference/mcp/getting-started
+  - well-known/heymilo-oauth-authorization-server.json
