@@ -1,0 +1,2623 @@
+openapi: 3.1.0
+info:
+  title: HeyMilo Public ATS Interviewers API
+  description: External developer-facing API for HeyMilo. Create interviewers with agentic workflows, ingest candidates, retrieve interview results, and manage workspace resources.
+  version: 2.0.0
+servers:
+- url: https://api.heymilo.ai
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: Interviewers
+  description: Create, read, update, and manage interviewers. An interviewer (posting) combines job details with an AI agent configuration and agentic workflow.
+paths:
+  /api/v2/postings:
+    post:
+      tags:
+      - Interviewers
+      summary: Create an interviewer
+      description: 'Create a fully-configured interviewer with an agentic workflow. Returns the new posting ID, URLs, and a full posting receipt.
+
+
+        **ATS-derived templates use a two-step flow.** When `interview_template_id` references a template whose blueprint is ATS-derived, the new posting is returned in an intermediate stage (`status: "draft"`, `ats_metadata.pending_activation: true`) and does **not** begin ingesting candidates. Transition it to live by calling `POST /postings/{posting_id}/activate`, which finalizes the posting and attaches the ATS mapping in one step. Non-ATS create paths are unchanged.'
+      operationId: createPosting
+      parameters:
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePostingRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_CreatePostingResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - Interviewers
+      summary: List interviewers
+      description: Retrieve a paginated list of interviewers for the authenticated workspace.
+      operationId: listPostings
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 20
+          title: Limit
+      - name: starting_after
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Starting After
+      - name: search
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-insensitive substring filter on the posting title.
+          title: Search
+        description: Case-insensitive substring filter on the posting title.
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse_PostingResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/postings/list:
+    get:
+      tags:
+      - Interviewers
+      summary: List interviewer summaries
+      description: Retrieve a lightweight paginated list of interviewers (id, title, name only) for the authenticated workspace.
+      operationId: listPostingSummaries
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 20
+          title: Limit
+      - name: starting_after
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Starting After
+      - name: search
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-insensitive substring filter on the posting title.
+          title: Search
+        description: Case-insensitive substring filter on the posting title.
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse_PostingSummary_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/postings/{posting_id}:
+    get:
+      tags:
+      - Interviewers
+      summary: Get an interviewer
+      description: Retrieve the full details of a specific interviewer by ID.
+      operationId: getPosting
+      parameters:
+      - name: posting_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Posting Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_PostingResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - Interviewers
+      summary: Update an interviewer
+      description: Update fields on an existing interviewer. Only provided fields are modified; omitted fields remain unchanged.
+      operationId: updatePosting
+      parameters:
+      - name: posting_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Posting Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePostingRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_PostingResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/postings/{posting_id}/stats:
+    get:
+      tags:
+      - Interviewers
+      summary: Get interviewer stats
+      description: 'Retrieve aggregate statistics for an interviewer in a single call: total candidate count, completed interview count, and average interview and resume scores.
+
+
+        The two score fields are independent per-agent averages and are `null` when that agent is not part of the interviewer''s workflow, or when no candidate has been scored yet.'
+      operationId: getPostingStats
+      parameters:
+      - name: posting_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Posting Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_PostingStatsResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/postings/{posting_id}/workflow/{step_id}:
+    patch:
+      tags:
+      - Interviewers
+      summary: Update a workflow step's config
+      description: Partially update one workflow step's config without touching other steps or posting-level fields. ``step_id`` is the step's ``type`` or its 1-based ``order``.
+      operationId: updateInterviewerWorkflowStep
+      parameters:
+      - name: posting_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Posting Id
+      - name: step_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Step Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWorkflowStepRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_PostingResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/postings/{posting_id}/archive:
+    post:
+      tags:
+      - Interviewers
+      summary: Archive an interviewer
+      description: Archive an interviewer. Archived interviewers stop accepting new candidates.
+      operationId: archivePosting
+      parameters:
+      - name: posting_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Posting Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_PostingResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/postings/{posting_id}/activate:
+    post:
+      tags:
+      - Interviewers
+      summary: Activate an interviewer
+      description: 'Activate an interviewer so it begins accepting candidates. The interviewer must have a valid workflow configuration.
+
+
+        For ATS-derived postings still in the `pending_activation` intermediate stage (created via `createPosting` with an ATS-derived `interview_template_id`, or `clonePosting` of an ATS-derived posting), this call finalizes the posting **and** attaches the ATS mapping so candidate ingestion from the ATS begins. The two steps run in one call; the ATS attach is idempotent and best-effort, so re-calling activate is safe and a transient ATS integrator hiccup will not block finalize.'
+      operationId: activatePosting
+      parameters:
+      - name: posting_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Posting Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_PostingResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/postings/{posting_id}/clone:
+    post:
+      tags:
+      - Interviewers
+      summary: Clone an interviewer
+      description: 'Create a copy of an existing interviewer with its workflow configuration.
+
+
+        If the source interviewer is ATS-derived, the clone is returned in the same intermediate stage as a fresh ATS create (`status: "draft"`, `ats_metadata.pending_activation: true`) and must be transitioned to live via `POST /postings/{posting_id}/activate`. Cloning a non-ATS posting is unchanged.'
+      operationId: clonePosting
+      parameters:
+      - name: posting_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Posting Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_CreatePostingResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    PostingURLs:
+      properties:
+        candidate_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Candidate Url
+          description: Candidate-facing interview URL.
+          examples:
+          - https://candidates.heymilo.io/acme/senior-engineer
+        ingestion_url_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Ingestion Url Key
+          description: URL key for candidate ingestion. Use with POST /intake/v1/candidate/{key}.
+          examples:
+          - ibURejyPMSlw6de0OZUdoxyoXTgWO78ey2NUo96EOG1gY
+        review_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Review Url
+          description: Admin dashboard review URL.
+          examples:
+          - https://admin.heymilo.ai/w/ABC123/lab2/POST_ID/1-details
+      type: object
+      title: PostingURLs
+      description: All URLs associated with a posting.
+    CreatePostingRequest:
+      properties:
+        title:
+          type: string
+          maxLength: 200
+          minLength: 3
+          title: Title
+          description: Job posting title
+          examples:
+          - Senior Software Engineer
+        description:
+          type: string
+          maxLength: 50000
+          title: Description
+          description: Job posting description. Used by AI to generate interview questions.
+          default: ''
+        workflow:
+          anyOf:
+          - items:
+              oneOf:
+              - $ref: '#/components/schemas/_WebInterviewStep'
+              - $ref: '#/components/schemas/_ConversationalSMSStep'
+              - $ref: '#/components/schemas/_ResumeStep'
+              - $ref: '#/components/schemas/_FormStep'
+            type: array
+          - type: 'null'
+          title: Workflow
+          description: Ordered list of workflow steps with optional config and questions. Required unless ``interview_template_id`` is provided. Mutually exclusive with ``interview_template_id``.
+        interview_template_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Interview Template Id
+          description: 'Optional interview template ID to use as the starting point for this posting. When provided, the template''s blueprint posting is cloned (workflow, questions, criteria, agent settings, and any linked configurations are copied) and any other fields supplied in this request override the cloned values (title, description, root-level configs, integration IDs, metadata, etc.). Mutually exclusive with ``workflow``: provide one or the other.'
+          examples:
+          - IT_abc123
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+          description: Internal posting slug
+          examples:
+          - senior-swe-backend
+        language:
+          type: string
+          title: Language
+          description: Interview language (ISO 639-1)
+          default: en
+          examples:
+          - en
+        interviewer_name:
+          type: string
+          title: Interviewer Name
+          description: AI interviewer display name
+          default: Sarah
+        instructions:
+          type: string
+          title: Instructions
+          description: Instructions for the AI interviewer
+          default: ''
+        company_overview:
+          type: string
+          title: Company Overview
+          description: Brief overview of the company
+          default: ''
+        job_overview:
+          type: string
+          title: Job Overview
+          description: Brief overview of the role
+          default: ''
+        interview_process_overview:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Interview Process Overview
+          description: Process overview shared with agents.
+        company_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Company Overview Delivery Mode
+          description: How the AI interviewer delivers the company overview. 'exact_delivery' (verbatim, default), 'summarized_delivery' (concise candidate-friendly summary), 'reference_only' (used only to answer candidate questions), 'silent_reference' (used internally, never shared with candidate).
+        job_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Job Overview Delivery Mode
+          description: How the AI interviewer delivers the job overview. Same options as company_overview_delivery_mode.
+        interview_process_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Interview Process Overview Delivery Mode
+          description: How the AI interviewer delivers the interview process overview. Same options as company_overview_delivery_mode.
+        phone_number_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone Number Id
+          description: Phone number ID for SMS and voice agents.
+        sender_email_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Sender Email Id
+          description: Sender email ID for candidate communications.
+        email_template_group_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email Template Group Id
+          description: Email template group ID for candidate emails.
+        design_template_group_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Design Template Group Id
+          description: Design template group ID for interview UI branding.
+        redirect_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Redirect Url
+          description: URL to redirect candidates after completing the interview.
+        scheduling_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Scheduling Url
+          description: Calendar scheduling URL for shortlisted candidates.
+        deadline:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Deadline
+          description: ISO 8601 deadline for the posting (e.g. '2025-03-15T00:00:00Z'). If omitted or null, defaults to one calendar month after creation.
+          examples:
+          - '2025-03-15T00:00:00Z'
+        allow_sms_comms:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Allow Sms Comms
+          description: Allow sending SMS invitations to candidates.
+        max_retakes:
+          anyOf:
+          - type: integer
+            maximum: 5.0
+            minimum: 0.0
+          - type: 'null'
+          title: Max Retakes
+          description: Max retake attempts (0-5).
+        retake_cooldown_days:
+          anyOf:
+          - type: number
+            minimum: 0.0
+          - type: 'null'
+          title: Retake Cooldown Days
+          description: Days a candidate must wait between retake attempts.
+        email_report_to_candidate:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Email Report To Candidate
+          description: Email a performance report link to candidates after completion.
+        metadata:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Metadata
+          description: Set of key-value pairs for storing additional information on the interviewer. Up to 50 keys, each key max 40 chars, each value max 500 chars.
+          examples:
+          - external_id: ats_12345
+            source: workday
+      type: object
+      required:
+      - title
+      title: CreatePostingRequest
+    APIError:
+      properties:
+        type:
+          type: string
+          title: Type
+          description: Error category
+          examples:
+          - invalid_request_error
+        code:
+          type: string
+          title: Code
+          description: Machine-readable error code
+          examples:
+          - validation_error
+        message:
+          type: string
+          title: Message
+          description: Human-readable summary
+          examples:
+          - The request body failed validation
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Param
+          description: Top-level parameter that caused the error
+        doc_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Doc Url
+          description: Link to relevant documentation
+        errors:
+          items:
+            $ref: '#/components/schemas/APIErrorDetail'
+          type: array
+          title: Errors
+          description: Detailed per-field validation errors
+      type: object
+      required:
+      - type
+      - code
+      - message
+      title: APIError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    UpdateWorkflowStepRequest:
+      properties:
+        config:
+          additionalProperties: true
+          type: object
+          title: Config
+          description: Partial step config. Allowed keys depend on the step's agent type (see the matching step config in the create request). Nested objects are replaced as a whole. Unknown keys return 400.
+          examples:
+          - company_overview_delivery_mode: summarized_delivery
+            instructions: Updated step-only instructions.
+      type: object
+      required:
+      - config
+      title: UpdateWorkflowStepRequest
+      description: Partial update of a workflow step's config.
+    _FormStep:
+      properties:
+        type:
+          type: string
+          const: form
+          title: Type
+          description: Agent type.
+        config:
+          anyOf:
+          - $ref: '#/components/schemas/FormConfig'
+          - type: 'null'
+          description: Form screening agent configuration.
+        questions:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/CreateQuestion'
+            type: array
+          - type: 'null'
+          title: Questions
+          description: Questions for this step. If omitted, AI auto-generates.
+      type: object
+      required:
+      - type
+      title: _FormStep
+      description: Workflow step for form screening agent.
+    _WebInterviewStep:
+      properties:
+        type:
+          type: string
+          const: web_interview
+          title: Type
+          description: Agent type.
+        config:
+          anyOf:
+          - $ref: '#/components/schemas/WebInterviewConfig'
+          - type: 'null'
+          description: Web interview agent configuration.
+        questions:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/CreateQuestion'
+            type: array
+          - type: 'null'
+          title: Questions
+          description: Questions for this step. If omitted, AI auto-generates.
+      type: object
+      required:
+      - type
+      title: _WebInterviewStep
+      description: Workflow step for web_interview agent.
+    WorkflowStep:
+      properties:
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+          description: Unique identifier for this workflow step.
+          examples:
+          - agent_vi_001
+        type:
+          type: string
+          title: Type
+          description: 'Agent type: ''web_interview'', ''conversational_sms'', ''resume'', ''form''.'
+          examples:
+          - web_interview
+        order:
+          type: integer
+          title: Order
+          description: Position in the workflow pipeline (1-based).
+          examples:
+          - 1
+        config:
+          additionalProperties: true
+          type: object
+          title: Config
+          description: Agent-specific configuration. Shape varies by type. See GET /api/v2/schemas/agents for details.
+      type: object
+      required:
+      - type
+      - order
+      title: WorkflowStep
+      description: A single step in a posting's agentic workflow.
+    _ResumeStep:
+      properties:
+        type:
+          type: string
+          const: resume
+          title: Type
+          description: Agent type.
+        config:
+          anyOf:
+          - $ref: '#/components/schemas/ResumeConfig'
+          - type: 'null'
+          description: Resume screening agent configuration.
+        questions:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/CreateQuestion'
+            type: array
+          - type: 'null'
+          title: Questions
+          description: Criteria for this step. If omitted, AI auto-generates.
+      type: object
+      required:
+      - type
+      title: _ResumeStep
+      description: Workflow step for resume screening agent.
+    SingleResponse_CreatePostingResponse_:
+      properties:
+        data:
+          $ref: '#/components/schemas/CreatePostingResponse'
+        meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+          description: Optional metadata. Shape varies by endpoint.
+      type: object
+      required:
+      - data
+      title: SingleResponse[CreatePostingResponse]
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    CreatePostingResponse:
+      properties:
+        object:
+          type: string
+          const: posting
+          title: Object
+          description: Object type identifier.
+          default: posting
+        id:
+          type: string
+          title: Id
+          description: Unique posting identifier.
+          examples:
+          - 13D77095
+        status:
+          type: string
+          title: Status
+          description: Posting status after creation.
+          examples:
+          - active
+        urls:
+          $ref: '#/components/schemas/PostingURLs'
+          description: All URLs associated with this posting.
+        created_at:
+          type: number
+          title: Created At
+          description: Unix timestamp when the posting was created.
+          examples:
+          - 1739612400.0
+        posting:
+          anyOf:
+          - $ref: '#/components/schemas/PostingResponse'
+          - type: 'null'
+          description: Full posting resource (receipt pattern).
+      type: object
+      required:
+      - id
+      - status
+      - urls
+      - created_at
+      title: CreatePostingResponse
+      description: Response after successfully creating a posting.
+    ListResponse_PostingSummary_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PostingSummary'
+          type: array
+          title: Data
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      type: object
+      required:
+      - data
+      - pagination
+      title: ListResponse[PostingSummary]
+    UpdatePostingRequest:
+      properties:
+        title:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 3
+          - type: 'null'
+          title: Title
+          description: Updated job title.
+        description:
+          anyOf:
+          - type: string
+            maxLength: 50000
+            minLength: 10
+          - type: 'null'
+          title: Description
+          description: Updated job description.
+        name:
+          anyOf:
+          - type: string
+            maxLength: 100
+          - type: 'null'
+          title: Name
+          description: Updated URL slug.
+        language:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Language
+          description: Updated default language (BCP-47).
+        interviewer_name:
+          anyOf:
+          - type: string
+            maxLength: 100
+          - type: 'null'
+          title: Interviewer Name
+          description: Updated AI interviewer display name.
+        instructions:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Instructions
+          description: Updated global instructions for the AI interviewer.
+        company_overview:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Company Overview
+          description: Updated company overview.
+        job_overview:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Job Overview
+          description: Updated job overview.
+        interview_process_overview:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Interview Process Overview
+          description: Updated process overview shared with agents.
+        company_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Company Overview Delivery Mode
+          description: Updated company overview delivery mode.
+        job_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Job Overview Delivery Mode
+          description: Updated job overview delivery mode.
+        interview_process_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Interview Process Overview Delivery Mode
+          description: Updated interview process overview delivery mode.
+        phone_number_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone Number Id
+          description: Updated phone number ID.
+        sender_email_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Sender Email Id
+          description: Updated sender email ID.
+        email_template_group_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email Template Group Id
+          description: Updated email template group ID.
+        design_template_group_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Design Template Group Id
+          description: Updated design template group ID.
+        redirect_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Redirect Url
+          description: Updated post-completion redirect URL.
+        scheduling_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Scheduling Url
+          description: Updated scheduling URL for shortlisted candidates.
+        deadline:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Deadline
+          description: Updated ISO 8601 deadline.
+        allow_sms_comms:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Allow Sms Comms
+          description: Updated SMS communications flag.
+        max_retakes:
+          anyOf:
+          - type: integer
+            maximum: 5.0
+            minimum: 0.0
+          - type: 'null'
+          title: Max Retakes
+          description: Updated max retake attempts (0-5).
+        retake_cooldown_days:
+          anyOf:
+          - type: number
+            minimum: 0.0
+          - type: 'null'
+          title: Retake Cooldown Days
+          description: Updated retake cooldown in days.
+        email_report_to_candidate:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Email Report To Candidate
+          description: Updated email report flag.
+        metadata:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Metadata
+          description: Updated key-value metadata. Replaces existing metadata entirely. Up to 50 keys, each key max 40 chars, each value max 500 chars.
+          examples:
+          - external_id: ats_12345
+            source: workday
+      type: object
+      title: UpdatePostingRequest
+      description: Request body for updating a posting. All fields are optional.
+    WebInterviewConfig:
+      properties:
+        instructions:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Instructions
+          description: Per-step override for AI interviewer instructions. Falls back to the posting-level 'instructions' when omitted.
+        company_overview:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Company Overview
+          description: Per-step override for company overview. Falls back to the posting-level 'company_overview' when omitted.
+        job_overview:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Job Overview
+          description: Per-step override for job overview. Falls back to the posting-level 'job_overview' when omitted.
+        interview_process_overview:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Interview Process Overview
+          description: Per-step override for interview process overview. Falls back to the posting-level 'interview_process_overview' when omitted.
+        company_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Company Overview Delivery Mode
+          description: Per-step override for how the AI interviewer delivers the company overview. Falls back to the posting-level value when omitted.
+        job_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Job Overview Delivery Mode
+          description: Per-step override for how the AI interviewer delivers the job overview. Falls back to the posting-level value when omitted.
+        interview_process_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Interview Process Overview Delivery Mode
+          description: Per-step override for how the AI interviewer delivers the interview process overview. Falls back to the posting-level value when omitted.
+        video:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Video
+          description: 'Enable video during interview (default: audio-only).'
+        voice_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Voice Id
+          description: Voice ID for AI interviewer. Use GET /api/v2/voices to list available voices.
+          examples:
+          - voice-1
+          - wrv-abc123
+        phone_calls_enabled:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Phone Calls Enabled
+          description: Allow outbound phone call interviews (requires phone_number_id).
+        interview_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Interview Type
+          description: 'Interview focus: general, technical, cultural, behavioral.'
+          examples:
+          - general
+          - technical
+        num_questions:
+          anyOf:
+          - type: integer
+            maximum: 25.0
+            minimum: 1.0
+          - type: 'null'
+          title: Num Questions
+          description: Number of questions (ignored if questions provided).
+        min_evaluation_score:
+          anyOf:
+          - type: number
+            maximum: 1.0
+            minimum: 0.0
+          - type: 'null'
+          title: Min Evaluation Score
+          description: Minimum normalized score (0.0-1.0) to pass this stage.
+        prompt_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Prompt Version
+          description: 'Prompt version: v1 or v2 (latest).'
+          examples:
+          - v2
+        is_multilingual:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Multilingual
+          description: Auto-detect candidate language and respond in kind.
+        cheat_detection_config:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Cheat Detection Config
+          description: 'Cheat detection settings: {enabled: bool, threshold: int 0-100, types: [''tab_switching'',''ai_scripted_answer'',''multiple_people'',''multiple_speakers'',''phone_detection'',''unusual_delays'',''facial_behaviour'']}'
+        web_interview_config:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Web Interview Config
+          description: 'Advanced interview UI config: {show_transcript, candidate_presence_enabled, min_duration_seconds, max_duration_seconds, backdrop_image_url, avatar_image_url, intro_message, outro_message, remove_heymilo_branding}'
+      type: object
+      title: WebInterviewConfig
+      description: Config for the web_interview agent.
+    SingleResponse_PostingResponse_:
+      properties:
+        data:
+          $ref: '#/components/schemas/PostingResponse'
+        meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+          description: Optional metadata. Shape varies by endpoint.
+      type: object
+      required:
+      - data
+      title: SingleResponse[PostingResponse]
+    PostingSummary:
+      properties:
+        object:
+          type: string
+          const: posting_summary
+          title: Object
+          description: Object type identifier.
+          default: posting_summary
+        id:
+          type: string
+          title: Id
+          description: Unique posting identifier.
+          examples:
+          - 13D77095
+        title:
+          type: string
+          title: Title
+          description: Job title displayed to candidates.
+          examples:
+          - Senior Software Engineer
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+          description: URL-friendly slug for the posting.
+          examples:
+          - senior-software-engineer
+      type: object
+      required:
+      - id
+      - title
+      title: PostingSummary
+      description: Lightweight posting representation with only identifying fields.
+    PostingStatsResponse:
+      properties:
+        object:
+          type: string
+          const: posting_stats
+          title: Object
+          description: Object type identifier.
+          default: posting_stats
+        posting_id:
+          type: string
+          title: Posting Id
+          description: ID of the posting these stats describe.
+          examples:
+          - 13D77095
+        title:
+          type: string
+          title: Title
+          description: Job title of the posting.
+          examples:
+          - Senior Software Engineer
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+          description: URL-friendly slug for the posting.
+          examples:
+          - senior-software-engineer
+        total_candidates:
+          type: integer
+          title: Total Candidates
+          description: Total number of candidates registered to the posting.
+          examples:
+          - 142
+        completed_interviews:
+          type: integer
+          title: Completed Interviews
+          description: Number of candidates that have fully completed the posting's workflow (every step complete).
+          examples:
+          - 87
+        average_interview_score:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Average Interview Score
+          description: Average web-interview score (0-100) across scored candidates. ``null`` when the posting has no web-interview agent or no candidate has been scored yet.
+          examples:
+          - 72.4
+        average_resume_score:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Average Resume Score
+          description: Average resume score (0-100) across scored candidates. ``null`` when the posting has no resume agent or no candidate has been scored yet.
+          examples:
+          - 65.1
+      type: object
+      required:
+      - posting_id
+      - title
+      - total_candidates
+      - completed_interviews
+      title: PostingStatsResponse
+      description: 'Aggregate statistics for a single posting.
+
+
+        Returned in a single call without paginating the posting''s candidates.
+
+        The two score fields are independent per-agent averages (not blended):
+
+        each is ``null`` when that agent is not part of the posting''s workflow,
+
+        or when no candidate has produced a score for it yet.'
+    ListResponse_PostingResponse_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PostingResponse'
+          type: array
+          title: Data
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      type: object
+      required:
+      - data
+      - pagination
+      title: ListResponse[PostingResponse]
+    APIErrorResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/APIError'
+      type: object
+      required:
+      - error
+      title: APIErrorResponse
+    SingleResponse_PostingStatsResponse_:
+      properties:
+        data:
+          $ref: '#/components/schemas/PostingStatsResponse'
+        meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+          description: Optional metadata. Shape varies by endpoint.
+      type: object
+      required:
+      - data
+      title: SingleResponse[PostingStatsResponse]
+    PostingResponse:
+      properties:
+        object:
+          type: string
+          const: posting
+          title: Object
+          description: Object type identifier.
+          default: posting
+        id:
+          type: string
+          title: Id
+          description: Unique posting identifier.
+          examples:
+          - 13D77095
+        company_id:
+          type: string
+          title: Company Id
+          description: ID of the company that owns this posting.
+          examples:
+          - comp_abc123
+        title:
+          type: string
+          title: Title
+          description: Job title displayed to candidates.
+          examples:
+          - Senior Software Engineer
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+          description: URL-friendly slug for the posting.
+          examples:
+          - senior-software-engineer
+        description:
+          type: string
+          title: Description
+          description: Full job description text.
+          examples:
+          - We are looking for a senior software engineer...
+        language:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Language
+          description: BCP-47 language code.
+          default: en
+          examples:
+          - en
+          - es
+        interviewer_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Interviewer Name
+          description: Display name of the AI interviewer.
+          examples:
+          - Sarah
+        status:
+          type: string
+          title: Status
+          description: 'Posting status: ''draft'', ''active'', ''expired'', ''archived''.'
+          examples:
+          - active
+        finalized:
+          type: boolean
+          title: Finalized
+          description: Whether the posting has been finalized/activated.
+          examples:
+          - true
+        archived:
+          type: boolean
+          title: Archived
+          description: Whether the posting is archived.
+          examples:
+          - false
+        test_posting:
+          type: boolean
+          title: Test Posting
+          description: Whether this is a test posting.
+          examples:
+          - false
+        workflow:
+          items:
+            $ref: '#/components/schemas/WorkflowStep'
+          type: array
+          title: Workflow
+          description: Ordered list of agentic workflow steps.
+        urls:
+          anyOf:
+          - $ref: '#/components/schemas/PostingURLs'
+          - type: 'null'
+          description: All URLs associated with this posting.
+        deadline:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Deadline
+          description: Unix timestamp deadline for the posting.
+          examples:
+          - 1775174400.0
+        redirect_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Redirect Url
+          description: URL candidates are redirected to after completing the interview.
+          examples:
+          - https://acme.com/thank-you
+        scheduling_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Scheduling Url
+          description: Calendar scheduling URL for shortlisted candidates.
+          examples:
+          - https://cal.com/acme/interview
+        max_retakes:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Max Retakes
+          description: Maximum number of interview retakes allowed.
+          examples:
+          - 1
+        allow_sms_comms:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Allow Sms Comms
+          description: Whether SMS communications are enabled.
+          default: false
+        instructions:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Instructions
+          description: General instructions for the AI interviewer shared with agents.
+        company_overview:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Company Overview
+          description: Overview of the company shared with agents.
+        job_overview:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Job Overview
+          description: Overview of the job/role shared with agents.
+        interview_process_overview:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Interview Process Overview
+          description: Overview of the interview process shared with agents.
+        company_overview_delivery_mode:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Company Overview Delivery Mode
+          description: How the AI interviewer delivers the company overview.
+        job_overview_delivery_mode:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Job Overview Delivery Mode
+          description: How the AI interviewer delivers the job overview.
+        interview_process_overview_delivery_mode:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Interview Process Overview Delivery Mode
+          description: How the AI interviewer delivers the interview process overview.
+        phone_number_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone Number Id
+          description: ID of the phone number used for outbound calls.
+        sender_email_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Sender Email Id
+          description: ID of the sender email configuration.
+        email_template_group_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email Template Group Id
+          description: ID of the email template group.
+        design_template_group_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Design Template Group Id
+          description: ID of the design template group.
+        retake_cooldown_days:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Retake Cooldown Days
+          description: Cooldown period in days before a candidate can retake.
+        email_report_to_candidate:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Email Report To Candidate
+          description: Whether to email the interview report to the candidate.
+          default: false
+        ats_metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Ats Metadata
+          description: 'ATS integration metadata for postings derived from an ATS (Import-from-ATS flow or `createPosting` with an ATS-derived `interview_template_id`). Null for postings not connected to an ATS. Common fields:
+
+            - `source` (string): how the posting was created, e.g. `job_sync`.
+
+            - `ats_name` (string): identifier of the ATS, e.g. `workable`, `bullhorn`.
+
+            - `ats_job_id` (string): ID of the ATS job that backs this posting.
+
+            - `ats_job_posting_id` (string, optional): ATS-side job-posting ID when distinct from `ats_job_id`.
+
+            - `integration_id` (string, optional): heymilo ATS integration ID.
+
+            - `job_ids` (string[], optional): ATS job IDs included in the mapping config.
+
+            - `pending_activation` (bool): `true` while the agent is in the intermediate stage created by `createPosting` / `clonePosting` for ATS-derived postings. Candidate ingestion does not begin until the caller transitions out of this stage by calling `POST /postings/{posting_id}/activate`, which finalizes the posting and attaches the ATS mapping in one step.
+
+            - `mapping_activated_at`, `mapping_activated_by` (read-only): audit fields stamped when the ATS mapping was attached.
+
+            - `mapping_deactivated_at`, `mapping_deactivated_by` (read-only): audit fields stamped when the ATS mapping was last paused.'
+          examples:
+          - ats_job_id: WK-12345
+            ats_name: workable
+            pending_activation: true
+            source: job_sync
+          - ats_job_id: WK-12345
+            ats_name: workable
+            mapping_activated_at: '2026-05-21T15:00:00'
+            mapping_activated_by: api_key:abcd1234
+            pending_activation: false
+            source: job_sync
+        metadata:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Metadata
+          description: Set of key-value pairs for storing additional information. Up to 50 keys, each key max 40 chars, each value max 500 chars.
+          examples:
+          - external_id: ats_12345
+            source: workday
+        created_at:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Created At
+          description: Unix timestamp when the posting was created.
+          examples:
+          - 1739612400.0
+        updated_at:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Updated At
+          description: Unix timestamp when the posting was last updated.
+          examples:
+          - 1739617200.0
+      type: object
+      required:
+      - id
+      - company_id
+      - title
+      - description
+      - status
+      - finalized
+      - archived
+      - test_posting
+      title: PostingResponse
+      description: 'A job posting with its full agentic workflow configuration.
+
+
+        A posting represents a complete hiring pipeline — it defines the
+
+        job, the AI agents involved, and how candidates progress through
+
+        each screening step.'
+    ResumeConfig:
+      properties:
+        instructions:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Instructions
+          description: Per-step override for AI interviewer instructions. Falls back to the posting-level 'instructions' when omitted.
+        company_overview:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Company Overview
+          description: Per-step override for company overview. Falls back to the posting-level 'company_overview' when omitted.
+        job_overview:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Job Overview
+          description: Per-step override for job overview. Falls back to the posting-level 'job_overview' when omitted.
+        interview_process_overview:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Interview Process Overview
+          description: Per-step override for interview process overview. Falls back to the posting-level 'interview_process_overview' when omitted.
+        company_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Company Overview Delivery Mode
+          description: Per-step override for how the AI interviewer delivers the company overview. Falls back to the posting-level value when omitted.
+        job_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Job Overview Delivery Mode
+          description: Per-step override for how the AI interviewer delivers the job overview. Falls back to the posting-level value when omitted.
+        interview_process_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Interview Process Overview Delivery Mode
+          description: Per-step override for how the AI interviewer delivers the interview process overview. Falls back to the posting-level value when omitted.
+        knockout_enabled:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Knockout Enabled
+          description: Auto-reject candidates failing eligibility criteria.
+        min_evaluation_score:
+          anyOf:
+          - type: number
+            maximum: 1.0
+            minimum: 0.0
+          - type: 'null'
+          title: Min Evaluation Score
+          description: Minimum normalized score on scoring criteria.
+        mandatory:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Mandatory
+          description: Require resume upload to proceed.
+        num_eligibility_questions:
+          anyOf:
+          - type: integer
+            maximum: 15.0
+            minimum: 0.0
+          - type: 'null'
+          title: Num Eligibility Questions
+          description: Number of pass/fail eligibility criteria.
+        num_criteria_questions:
+          anyOf:
+          - type: integer
+            maximum: 15.0
+            minimum: 0.0
+          - type: 'null'
+          title: Num Criteria Questions
+          description: Number of scored criteria.
+      type: object
+      title: ResumeConfig
+      description: Config for the resume screening agent.
+    PaginationMeta:
+      properties:
+        has_more:
+          type: boolean
+          title: Has More
+          description: Whether more results exist beyond this page
+        total_count:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Count
+          description: Total number of results (if available)
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: URL of this resource
+      type: object
+      required:
+      - has_more
+      title: PaginationMeta
+    APIErrorDetail:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Machine-readable error code
+          examples:
+          - invalid_param
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation
+          examples:
+          - title must be between 3 and 200 characters
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Param
+          description: Parameter that caused the error
+          examples:
+          - title
+      type: object
+      required:
+      - code
+      - message
+      title: APIErrorDetail
+    ConversationalSMSConfig:
+      properties:
+        instructions:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Instructions
+          description: Per-step override for AI interviewer instructions. Falls back to the posting-level 'instructions' when omitted.
+        company_overview:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Company Overview
+          description: Per-step override for company overview. Falls back to the posting-level 'company_overview' when omitted.
+        job_overview:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Job Overview
+          description: Per-step override for job overview. Falls back to the posting-level 'job_overview' when omitted.
+        interview_process_overview:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Interview Process Overview
+          description: Per-step override for interview process overview. Falls back to the posting-level 'interview_process_overview' when omitted.
+        company_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Company Overview Delivery Mode
+          description: Per-step override for how the AI interviewer delivers the company overview. Falls back to the posting-level value when omitted.
+        job_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Job Overview Delivery Mode
+          description: Per-step override for how the AI interviewer delivers the job overview. Falls back to the posting-level value when omitted.
+        interview_process_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Interview Process Overview Delivery Mode
+          description: Per-step override for how the AI interviewer delivers the interview process overview. Falls back to the posting-level value when omitted.
+        knockout_enabled:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Knockout Enabled
+          description: Auto-disqualify candidates who fail dealbreaker criteria.
+        num_questions:
+          anyOf:
+          - type: integer
+            maximum: 10.0
+            minimum: 1.0
+          - type: 'null'
+          title: Num Questions
+          description: Number of SMS criteria (ignored if criteria provided).
+        intro_message:
+          anyOf:
+          - type: string
+            maxLength: 500
+          - type: 'null'
+          title: Intro Message
+          description: Custom intro message. Supports {{candidate_name}} and {{job_title}} variables.
+        disqualification_message:
+          anyOf:
+          - type: string
+            maxLength: 500
+          - type: 'null'
+          title: Disqualification Message
+          description: Message sent when candidate fails a dealbreaker.
+        follow_up_message:
+          anyOf:
+          - type: string
+            maxLength: 500
+          - type: 'null'
+          title: Follow Up Message
+          description: Custom follow-up/nudge message.
+        hop_on_call_message:
+          anyOf:
+          - type: string
+            maxLength: 500
+          - type: 'null'
+          title: Hop On Call Message
+          description: Message for phone/video call invitation.
+        cooldown_period_hrs:
+          anyOf:
+          - type: integer
+            maximum: 168.0
+            minimum: 1.0
+          - type: 'null'
+          title: Cooldown Period Hrs
+          description: Hours to wait before sending a follow-up nudge.
+        max_nudge_amount:
+          anyOf:
+          - type: integer
+            maximum: 10.0
+            minimum: 0.0
+          - type: 'null'
+          title: Max Nudge Amount
+          description: Maximum number of follow-up nudges.
+        blackout_period:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Blackout Period
+          description: 'No-message window: {enabled: bool, timezone: str (IANA), start_hour: 0-23, end_hour: 1-24}'
+      type: object
+      title: ConversationalSMSConfig
+      description: Config for the conversational_sms agent.
+    FormConfig:
+      properties:
+        instructions:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Instructions
+          description: Per-step override for AI interviewer instructions. Falls back to the posting-level 'instructions' when omitted.
+        company_overview:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Company Overview
+          description: Per-step override for company overview. Falls back to the posting-level 'company_overview' when omitted.
+        job_overview:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Job Overview
+          description: Per-step override for job overview. Falls back to the posting-level 'job_overview' when omitted.
+        interview_process_overview:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Interview Process Overview
+          description: Per-step override for interview process overview. Falls back to the posting-level 'interview_process_overview' when omitted.
+        company_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Company Overview Delivery Mode
+          description: Per-step override for how the AI interviewer delivers the company overview. Falls back to the posting-level value when omitted.
+        job_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Job Overview Delivery Mode
+          description: Per-step override for how the AI interviewer delivers the job overview. Falls back to the posting-level value when omitted.
+        interview_process_overview_delivery_mode:
+          anyOf:
+          - type: string
+            enum:
+            - exact_delivery
+            - summarized_delivery
+            - reference_only
+            - silent_reference
+          - type: 'null'
+          title: Interview Process Overview Delivery Mode
+          description: Per-step override for how the AI interviewer delivers the interview process overview. Falls back to the posting-level value when omitted.
+        knockout_enabled:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Knockout Enabled
+          description: Auto-disqualify on knockout question failure.
+      type: object
+      title: FormConfig
+      description: Config for the form screening agent.
+    _ConversationalSMSStep:
+      properties:
+        type:
+          type: string
+          const: conversational_sms
+          title: Type
+          description: Agent type.
+        config:
+          anyOf:
+          - $ref: '#/components/schemas/ConversationalSMSConfig'
+          - type: 'null'
+          description: SMS screening agent configuration.
+        questions:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/CreateQuestion'
+            type: array
+          - type: 'null'
+          title: Questions
+          description: Criteria for this step. If omitted, AI auto-generates.
+      type: object
+      required:
+      - type
+      title: _ConversationalSMSStep
+      description: Workflow step for conversational_sms agent.
+    CreateQuestion:
+      properties:
+        modality:
+          type: string
+          title: Modality
+          description: 'Question modality: voice, resume_eligibility, resume_scoring, form, sms, voice_tags.'
+        text:
+          type: string
+          title: Text
+          description: Question text or criterion text.
+        evaluation_criteria:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Evaluation Criteria
+          description: How to evaluate (voice, resume_scoring).
+        score_of_1:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Score Of 1
+          description: Score-1 description (voice, resume_scoring).
+        score_of_5:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Score Of 5
+          description: Score-5 description (voice, resume_scoring).
+        question_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Question Type
+          description: 'Format: open-ended|scored, textarea|dropdown, YES_NO|NUMERIC.'
+        not_scored:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Not Scored
+          description: Ask but don't score (voice).
+        expected_answer:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expected Answer
+          description: Expected answer (sms).
+        expected_value:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Expected Value
+          description: Expected numeric value (sms).
+        is_dealbreaker:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Dealbreaker
+          description: Disqualify on wrong answer (sms).
+        answer:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Answer
+          description: Expected answer (form knockout).
+        is_knockout:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Knockout
+          description: Knockout question (form).
+        dropdown_values:
+          anyOf:
+          - items:
+              additionalProperties:
+                type: string
+              type: object
+            type: array
+          - type: 'null'
+          title: Dropdown Values
+          description: Dropdown options (form).
+        response_format:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Response Format
+          description: 'Response format: text|number|date|freeform (voice_tags).'
+        instructions:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Instructions
+          description: Extraction instructions (voice_tags).
+        options:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Options
+          description: Allowed options (voice_tags).
+        score_weight:
+          anyOf:
+          - type: integer
+            maximum: 5.0
+            minimum: 0.0
+          - type: 'null'
+          title: Score Weight
+          description: Importance weighting for this question's score (0-5). Higher = more important. Must be a whole number. Applies to voice, sms, resume_eligibility, resume_scoring.
+        min_follow_ups:
+          anyOf:
+          - type: integer
+            maximum: 5.0
+            minimum: 0.0
+          - type: 'null'
+          title: Min Follow Ups
+          description: Minimum follow-up questions the AI must ask (voice only).
+        max_follow_ups:
+          anyOf:
+          - type: integer
+            maximum: 10.0
+            minimum: 0.0
+          - type: 'null'
+          title: Max Follow Ups
+          description: Maximum follow-up questions the AI may ask (voice only).
+        additional_instructions:
+          anyOf:
+          - type: string
+            maxLength: 5000
+          - type: 'null'
+          title: Additional Instructions
+          description: Per-question instructions for the AI interviewer (voice only).
+        post_processing_evaluation_criteria:
+          anyOf:
+          - type: string
+            maxLength: 5000
+          - type: 'null'
+          title: Post Processing Evaluation Criteria
+          description: Evaluation criteria applied against the full transcript after the interview (voice only).
+        mcq_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Mcq Type
+          description: 'Multiple-choice type: single or multiple (form only).'
+        operator:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Operator
+          description: 'Validation operator for number/date questions: eq, neq, gt, gte, lt, lte (form only).'
+        file_types:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: File Types
+          description: Allowed file extensions for file_upload questions (form only).
+        allow_multiple_files:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Allow Multiple Files
+          description: Allow uploading multiple files (form only).
+        slider_min:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Slider Min
+          description: Minimum value for slider questions (form only).
+        slider_max:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Slider Max
+          description: Maximum value for slider questions (form only).
+        slider_step:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Slider Step
+          description: Step increment for slider questions (form only).
+        is_answer_mandated:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Answer Mandated
+          description: Require an answer to this question (form only).
+      type: object
+      required:
+      - modality
+      - text
+      title: CreateQuestion
+      description: A question or criterion for a workflow step.
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: API key for authentication. Pass your key in the X-API-KEY header.

@@ -1,0 +1,52 @@
+openapi: 3.1.0
+info:
+  title: HeyMilo Public ATS Schema Discovery API
+  description: External developer-facing API for HeyMilo. Create interviewers with agentic workflows, ingest candidates, retrieve interview results, and manage workspace resources.
+  version: 2.0.0
+servers:
+- url: https://api.heymilo.ai
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: Schema Discovery
+paths:
+  /api/v2/schemas/agents:
+    get:
+      tags:
+      - Schema Discovery
+      summary: List agent types
+      description: Returns the registry of supported agent types and their configuration.
+      operationId: list_agent_types_api_v2_schemas_agents_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response List Agent Types Api V2 Schemas Agents Get
+  /api/v2/schemas/question-types:
+    get:
+      tags:
+      - Schema Discovery
+      summary: List question types
+      description: Returns the registry of supported question/criteria types by modality.
+      operationId: list_question_types_api_v2_schemas_question_types_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response List Question Types Api V2 Schemas Question Types Get
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: API key for authentication. Pass your key in the X-API-KEY header.

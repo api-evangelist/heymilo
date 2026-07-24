@@ -1,0 +1,1158 @@
+openapi: 3.1.0
+info:
+  title: HeyMilo Public ATS Candidates API
+  description: External developer-facing API for HeyMilo. Create interviewers with agentic workflows, ingest candidates, retrieve interview results, and manage workspace resources.
+  version: 2.0.0
+servers:
+- url: https://api.heymilo.ai
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: Candidates
+  description: Ingest candidates into an interviewer's workflow (sync or async, single or bulk) and list candidates with their progress.
+paths:
+  /api/v2/postings/{posting_id}/candidates:
+    post:
+      tags:
+      - Candidates
+      summary: Ingest a single candidate
+      description: Submit a candidate for processing through the interviewer's workflow. Returns the interview ID, interview URL, and full candidate receipt.
+      operationId: ingestCandidate
+      parameters:
+      - name: posting_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Posting Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CandidateIngestRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_IngestCandidateResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - Candidates
+      summary: List candidates for an interviewer
+      description: Retrieve a paginated list of candidates for a specific interviewer. Each candidate includes workflow progress, scores, and agent summaries.
+      operationId: listCandidates
+      parameters:
+      - name: posting_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Posting Id
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          description: Maximum number of candidates to return (1–100).
+          default: 20
+          title: Limit
+        description: Maximum number of candidates to return (1–100).
+      - name: starting_after
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Cursor for pagination. Pass the `interview_id` of the last candidate from the previous page.
+          title: Starting After
+        description: Cursor for pagination. Pass the `interview_id` of the last candidate from the previous page.
+      - name: created_after
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Only return candidates invited to this interviewer at or after this bound (inclusive). Accepts an ISO-8601 datetime such as `2026-03-13T00:00:00Z` or `2026-03-13T00:00:00+00:00`, or Unix epoch seconds matching the `created_at` field in the response. Naive ISO values (no offset) are interpreted as UTC. Combine with `created_before` to query a closed interval.
+          examples:
+          - '2026-03-13T00:00:00Z'
+          - '1710288000'
+          title: Created After
+        description: Only return candidates invited to this interviewer at or after this bound (inclusive). Accepts an ISO-8601 datetime such as `2026-03-13T00:00:00Z` or `2026-03-13T00:00:00+00:00`, or Unix epoch seconds matching the `created_at` field in the response. Naive ISO values (no offset) are interpreted as UTC. Combine with `created_before` to query a closed interval.
+      - name: created_before
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Only return candidates invited to this interviewer at or before this bound (inclusive). Accepts an ISO-8601 datetime such as `2026-03-14T23:59:59Z`, or Unix epoch seconds matching the `created_at` field in the response. Naive ISO values (no offset) are interpreted as UTC.
+          examples:
+          - '2026-03-14T23:59:59Z'
+          - '1710374399'
+          title: Created Before
+        description: Only return candidates invited to this interviewer at or before this bound (inclusive). Accepts an ISO-8601 datetime such as `2026-03-14T23:59:59Z`, or Unix epoch seconds matching the `created_at` field in the response. Naive ISO values (no offset) are interpreted as UTC.
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse_CandidateResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '400':
+          description: Invalid date range (e.g. `created_before` < `created_after`).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/postings/{posting_id}/candidates/bulk:
+    post:
+      tags:
+      - Candidates
+      summary: Bulk ingest candidates
+      description: Submit multiple candidates at once for processing through the interviewer's workflow. Returns an interview ID and URL for each candidate.
+      operationId: ingestCandidatesBulk
+      parameters:
+      - name: posting_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Posting Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkCandidateIngestRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_list_BulkIngestCandidateResponseItem__'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/postings/{posting_id}/candidates/async:
+    post:
+      tags:
+      - Candidates
+      summary: Async ingest a single candidate
+      description: Queue a candidate for async processing through the interviewer's workflow. Returns an ingestion ID to track the job.
+      operationId: ingestCandidateAsync
+      parameters:
+      - name: posting_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Posting Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CandidateIngestRequest'
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_AsyncIngestResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/postings/{posting_id}/candidates/bulk/async:
+    post:
+      tags:
+      - Candidates
+      summary: Async bulk ingest candidates
+      description: Queue multiple candidates for async processing through the interviewer's workflow. Returns an ingestion ID to track the job.
+      operationId: ingestCandidatesBulkAsync
+      parameters:
+      - name: posting_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Posting Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkCandidateIngestRequest'
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_AsyncIngestResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    BulkIngestCandidateResponseItem:
+      properties:
+        object:
+          type: string
+          const: candidate
+          title: Object
+          description: Object type identifier.
+          default: candidate
+        interview_id:
+          type: string
+          title: Interview Id
+          description: Unique interview identifier for this candidate-posting pair.
+          examples:
+          - D536A69A4090E13F
+        interview_url:
+          type: string
+          title: Interview Url
+          description: URL the candidate uses to access the interview.
+          examples:
+          - https://candidates.heymilo.io/acme/i/D536A69A4090E13F
+        metadata:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Metadata
+          description: Set of key-value pairs for storing additional information. Up to 50 keys, each key max 40 chars, each value max 500 chars.
+          examples:
+          - ats_stage: phone_screen
+            external_id: candidate_xyz
+      type: object
+      required:
+      - interview_id
+      - interview_url
+      title: BulkIngestCandidateResponseItem
+      description: A single item in the bulk ingest response.
+    APIError:
+      properties:
+        type:
+          type: string
+          title: Type
+          description: Error category
+          examples:
+          - invalid_request_error
+        code:
+          type: string
+          title: Code
+          description: Machine-readable error code
+          examples:
+          - validation_error
+        message:
+          type: string
+          title: Message
+          description: Human-readable summary
+          examples:
+          - The request body failed validation
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Param
+          description: Top-level parameter that caused the error
+        doc_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Doc Url
+          description: Link to relevant documentation
+        errors:
+          items:
+            $ref: '#/components/schemas/APIErrorDetail'
+          type: array
+          title: Errors
+          description: Detailed per-field validation errors
+      type: object
+      required:
+      - type
+      - code
+      - message
+      title: APIError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    AgentFormSummary:
+      properties:
+        is_complete:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Complete
+          description: Whether the candidate completed the form.
+        is_eligible:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Eligible
+          description: Whether the candidate passed all knockout questions.
+        questions_answered:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Questions Answered
+          description: Number of questions answered.
+          examples:
+          - 5
+        total_questions:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Questions
+          description: Total number of questions on the form.
+          examples:
+          - 7
+      type: object
+      title: AgentFormSummary
+      description: Form screening summary metrics.
+    IngestCandidateResponse:
+      properties:
+        object:
+          type: string
+          const: candidate
+          title: Object
+          description: Object type identifier.
+          default: candidate
+        interview_id:
+          type: string
+          title: Interview Id
+          description: Unique interview identifier for this candidate-posting pair.
+          examples:
+          - D536A69A4090E13F
+        interview_url:
+          type: string
+          title: Interview Url
+          description: URL the candidate uses to access the interview.
+          examples:
+          - https://candidates.heymilo.io/acme/i/D536A69A4090E13F
+        posting_id:
+          type: string
+          title: Posting Id
+          description: ID of the posting this candidate was ingested into.
+          examples:
+          - 13D77095
+        candidate:
+          anyOf:
+          - $ref: '#/components/schemas/CandidateResponse'
+          - type: 'null'
+          description: Full candidate resource (receipt pattern).
+      type: object
+      required:
+      - interview_id
+      - interview_url
+      - posting_id
+      title: IngestCandidateResponse
+      description: Response after successfully ingesting a candidate.
+    CandidateIngestRequest:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: Candidate full name
+          examples:
+          - Jane Doe
+        email:
+          type: string
+          title: Email
+          description: Candidate email address
+          examples:
+          - jane.doe@example.com
+        phone_number:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone Number
+          description: Candidate phone number (E.164 format)
+          examples:
+          - '+12065551234'
+        metadata:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Metadata
+          description: Set of key-value pairs for storing additional information on the candidate. Up to 50 keys, each key max 40 chars, each value max 500 chars.
+          examples:
+          - ats_stage: phone_screen
+            external_id: candidate_xyz
+        data:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Data
+          description: Additional candidate data
+      type: object
+      required:
+      - name
+      - email
+      title: CandidateIngestRequest
+    WorkflowStepStatus:
+      properties:
+        step_id:
+          type: string
+          title: Step Id
+          description: Workflow step identifier.
+          examples:
+          - agent_vi_001
+        order:
+          type: integer
+          title: Order
+          description: Position in the workflow (1-based).
+          examples:
+          - 1
+        status:
+          type: string
+          title: Status
+          description: 'Step status: ''not_started'', ''in_progress'', ''completed'', ''knocked_out''.'
+          examples:
+          - completed
+        started:
+          type: boolean
+          title: Started
+          description: Whether the candidate has started this step.
+          examples:
+          - true
+        completed:
+          type: boolean
+          title: Completed
+          description: Whether the candidate has completed this step.
+          examples:
+          - true
+        knocked_out:
+          type: boolean
+          title: Knocked Out
+          description: Whether the candidate was disqualified at this step.
+          default: false
+          examples:
+          - false
+        last_updated_at:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Last Updated At
+          description: Unix timestamp of the last status change.
+          examples:
+          - 1739713800.0
+      type: object
+      required:
+      - step_id
+      - order
+      - status
+      - started
+      - completed
+      title: WorkflowStepStatus
+      description: Status of a single workflow step for a candidate.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    AgentSMSSummary:
+      properties:
+        is_eligible:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Eligible
+          description: Whether the candidate passed SMS screening.
+        criteria_passed:
+          items:
+            type: string
+          type: array
+          title: Criteria Passed
+          description: Criteria the candidate passed.
+        criteria_failed:
+          items:
+            type: string
+          type: array
+          title: Criteria Failed
+          description: Criteria the candidate failed.
+        messages_sent:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Messages Sent
+          description: Total messages sent by the agent.
+          examples:
+          - 8
+      type: object
+      title: AgentSMSSummary
+      description: SMS screening summary metrics.
+    SingleResponse_IngestCandidateResponse_:
+      properties:
+        data:
+          $ref: '#/components/schemas/IngestCandidateResponse'
+        meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+          description: Optional metadata. Shape varies by endpoint.
+      type: object
+      required:
+      - data
+      title: SingleResponse[IngestCandidateResponse]
+    ListResponse_CandidateResponse_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/CandidateResponse'
+          type: array
+          title: Data
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      type: object
+      required:
+      - data
+      - pagination
+      title: ListResponse[CandidateResponse]
+    CandidateResponse:
+      properties:
+        object:
+          type: string
+          const: candidate
+          title: Object
+          description: Object type identifier.
+          default: candidate
+        interview_id:
+          type: string
+          title: Interview Id
+          description: Unique interview identifier (one per candidate-posting pair).
+          examples:
+          - D536A69A4090E13F
+        candidate_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Candidate Id
+          description: Unique candidate identifier (shared across postings within a workspace).
+          examples:
+          - cand_def456
+        posting_id:
+          type: string
+          title: Posting Id
+          description: ID of the posting this candidate belongs to.
+          examples:
+          - 13D77095
+        name:
+          type: string
+          title: Name
+          description: Candidate's full name.
+          examples:
+          - Jane Smith
+        email:
+          type: string
+          title: Email
+          description: Candidate's email address.
+          examples:
+          - jane.smith@example.com
+        score:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Score
+          description: Overall match score (0-100). Aggregated across all completed workflow steps.
+          examples:
+          - 78.5
+        status:
+          type: string
+          title: Status
+          description: 'Current candidate status: ''pending'', ''in_progress'', ''evaluating'', ''completed'', ''shortlisted'', ''dismissed'', ''knocked_out''. ''evaluating'' means all workflow steps are done but the final score is still being computed.'
+          examples:
+          - completed
+        interview_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Interview Url
+          description: URL the candidate uses to access the interview.
+          examples:
+          - https://candidates.heymilo.io/acme/i/D536A69A4090E13F
+        workflow:
+          anyOf:
+          - $ref: '#/components/schemas/CandidateWorkflow'
+          - type: 'null'
+          description: Step-by-step workflow progress.
+        agent_summary:
+          anyOf:
+          - $ref: '#/components/schemas/AgentSummary'
+          - type: 'null'
+          description: Per-agent-type summary metrics.
+        shortlisted:
+          type: boolean
+          title: Shortlisted
+          description: Whether a recruiter has shortlisted this candidate.
+          default: false
+        dismissed:
+          type: boolean
+          title: Dismissed
+          description: Whether a recruiter has dismissed this candidate.
+          default: false
+        metadata:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Metadata
+          description: Set of key-value pairs for storing additional information. Up to 50 keys, each key max 40 chars, each value max 500 chars.
+          examples:
+          - ats_stage: phone_screen
+            external_id: candidate_xyz
+        data:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Data
+          description: Additional candidate data supplied at ingestion time.
+        interviewed_at:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Interviewed At
+          description: Unix timestamp when the candidate completed the interview.
+          examples:
+          - 1739713800.0
+        created_at:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Created At
+          description: Unix timestamp when the candidate was ingested.
+          examples:
+          - 1739612400.0
+      type: object
+      required:
+      - interview_id
+      - posting_id
+      - name
+      - email
+      - status
+      title: CandidateResponse
+      description: 'A candidate within a posting''s pipeline.
+
+
+        Each candidate has a unique ``interview_id`` (one per
+
+        candidate-posting pair) and a ``candidate_id`` (shared across
+
+        postings within a workspace).'
+    AgentResumeSummary:
+      properties:
+        resume_score:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Resume Score
+          description: Resume match score.
+          examples:
+          - 3.8
+        is_eligible:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Eligible
+          description: Whether the candidate meets eligibility criteria.
+        resume_link:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Resume Link
+          description: URL to the uploaded resume.
+          examples:
+          - https://cdn.heymilo.io/resumes/abc123.pdf
+      type: object
+      title: AgentResumeSummary
+      description: Resume screening summary metrics.
+    APIErrorResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/APIError'
+      type: object
+      required:
+      - error
+      title: APIErrorResponse
+    AgentSummary:
+      properties:
+        resume:
+          anyOf:
+          - $ref: '#/components/schemas/AgentResumeSummary'
+          - type: 'null'
+          description: Resume screening summary.
+        web_interview:
+          anyOf:
+          - $ref: '#/components/schemas/AgentWebInterviewSummary'
+          - type: 'null'
+          description: Web interview summary.
+        sms:
+          anyOf:
+          - $ref: '#/components/schemas/AgentSMSSummary'
+          - type: 'null'
+          description: SMS screening summary.
+        form:
+          anyOf:
+          - $ref: '#/components/schemas/AgentFormSummary'
+          - type: 'null'
+          description: Form screening summary.
+      type: object
+      title: AgentSummary
+      description: Per-agent-type summary metrics for a candidate.
+    CandidateWorkflow:
+      properties:
+        steps:
+          items:
+            $ref: '#/components/schemas/WorkflowStepStatus'
+          type: array
+          title: Steps
+          description: Ordered list of workflow step statuses.
+        all_complete:
+          type: boolean
+          title: All Complete
+          description: True when every step has been completed.
+          examples:
+          - false
+        last_activity_at:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Last Activity At
+          description: Unix timestamp of the candidate's most recent interaction with any step.
+          examples:
+          - 1739715600.0
+      type: object
+      required:
+      - steps
+      - all_complete
+      title: CandidateWorkflow
+      description: Overall workflow progress for a candidate.
+    SingleResponse_list_BulkIngestCandidateResponseItem__:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/BulkIngestCandidateResponseItem'
+          type: array
+          title: Data
+        meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+          description: Optional metadata. Shape varies by endpoint.
+      type: object
+      required:
+      - data
+      title: SingleResponse[list[BulkIngestCandidateResponseItem]]
+    AgentWebInterviewSummary:
+      properties:
+        score:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Score
+          description: Overall interview score.
+          examples:
+          - 82.0
+        highlights:
+          items:
+            type: string
+          type: array
+          title: Highlights
+          description: Candidate strengths identified by AI.
+        audio_recording_link:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Audio Recording Link
+          description: Signed URL to audio recording.
+        video_recording_link:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Video Recording Link
+          description: Signed URL to video recording.
+      type: object
+      title: AgentWebInterviewSummary
+      description: Web interview summary metrics.
+    PaginationMeta:
+      properties:
+        has_more:
+          type: boolean
+          title: Has More
+          description: Whether more results exist beyond this page
+        total_count:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Count
+          description: Total number of results (if available)
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: URL of this resource
+      type: object
+      required:
+      - has_more
+      title: PaginationMeta
+    APIErrorDetail:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Machine-readable error code
+          examples:
+          - invalid_param
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation
+          examples:
+          - title must be between 3 and 200 characters
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Param
+          description: Parameter that caused the error
+          examples:
+          - title
+      type: object
+      required:
+      - code
+      - message
+      title: APIErrorDetail
+    AsyncIngestResponse:
+      properties:
+        object:
+          type: string
+          const: ingestion
+          title: Object
+          description: Object type identifier.
+          default: ingestion
+        ingestion_id:
+          type: string
+          title: Ingestion Id
+          description: Unique identifier for this ingestion job.
+          examples:
+          - intake_abc123
+        status:
+          type: string
+          title: Status
+          description: Status of the ingestion job.
+          default: queued
+          examples:
+          - queued
+      type: object
+      required:
+      - ingestion_id
+      title: AsyncIngestResponse
+      description: Response after queuing an async ingest job.
+    SingleResponse_AsyncIngestResponse_:
+      properties:
+        data:
+          $ref: '#/components/schemas/AsyncIngestResponse'
+        meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+          description: Optional metadata. Shape varies by endpoint.
+      type: object
+      required:
+      - data
+      title: SingleResponse[AsyncIngestResponse]
+    BulkCandidateIngestRequest:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/CandidateIngestRequest'
+          type: array
+          minItems: 1
+          title: Data
+          description: List of candidates to ingest
+      type: object
+      required:
+      - data
+      title: BulkCandidateIngestRequest
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: API key for authentication. Pass your key in the X-API-KEY header.

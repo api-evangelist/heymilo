@@ -1,0 +1,553 @@
+openapi: 3.1.0
+info:
+  title: HeyMilo Public ATS Webhooks API
+  description: External developer-facing API for HeyMilo. Create interviewers with agentic workflows, ingest candidates, retrieve interview results, and manage workspace resources.
+  version: 2.0.0
+servers:
+- url: https://api.heymilo.ai
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: Webhooks
+  description: Register, list, and manage webhook endpoints that receive real-time event notifications.
+paths:
+  /api/v2/webhooks:
+    post:
+      tags:
+      - Webhooks
+      summary: Register a webhook
+      description: Register a webhook URL to receive event notifications. Events include candidate completion, interview status changes, etc.
+      operationId: createWebhook
+      parameters:
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWebhookRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_WebhookResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - Webhooks
+      summary: List webhooks
+      description: Retrieve all active webhooks for the authenticated workspace.
+      operationId: listWebhooks
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 20
+          title: Limit
+      - name: starting_after
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Starting After
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse_WebhookResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/webhooks/{webhook_id}:
+    get:
+      tags:
+      - Webhooks
+      summary: Get webhook details
+      description: Retrieve details of a specific registered webhook by ID.
+      operationId: getWebhook
+      parameters:
+      - name: webhook_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Webhook Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_WebhookResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Webhooks
+      summary: Deactivate a webhook
+      description: Deactivate (soft-delete) a webhook by ID.
+      operationId: deleteWebhook
+      parameters:
+      - name: webhook_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Webhook Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_WebhookResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    APIErrorDetail:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Machine-readable error code
+          examples:
+          - invalid_param
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation
+          examples:
+          - title must be between 3 and 200 characters
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Param
+          description: Parameter that caused the error
+          examples:
+          - title
+      type: object
+      required:
+      - code
+      - message
+      title: APIErrorDetail
+    APIError:
+      properties:
+        type:
+          type: string
+          title: Type
+          description: Error category
+          examples:
+          - invalid_request_error
+        code:
+          type: string
+          title: Code
+          description: Machine-readable error code
+          examples:
+          - validation_error
+        message:
+          type: string
+          title: Message
+          description: Human-readable summary
+          examples:
+          - The request body failed validation
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Param
+          description: Top-level parameter that caused the error
+        doc_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Doc Url
+          description: Link to relevant documentation
+        errors:
+          items:
+            $ref: '#/components/schemas/APIErrorDetail'
+          type: array
+          title: Errors
+          description: Detailed per-field validation errors
+      type: object
+      required:
+      - type
+      - code
+      - message
+      title: APIError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ListResponse_WebhookResponse_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/WebhookResponse'
+          type: array
+          title: Data
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      type: object
+      required:
+      - data
+      - pagination
+      title: ListResponse[WebhookResponse]
+    WebhookResponse:
+      properties:
+        object:
+          type: string
+          const: webhook
+          title: Object
+          description: Object type identifier.
+          default: webhook
+        webhook_id:
+          type: string
+          title: Webhook Id
+          description: Unique webhook identifier.
+          examples:
+          - 42AE4CFA720B1C35D499E9E39C14F321
+        posting_id:
+          type: string
+          title: Posting Id
+          description: ID of the posting this webhook is for.
+          examples:
+          - 13D77095
+        webhook_url:
+          type: string
+          title: Webhook Url
+          description: Destination URL for the webhook.
+          examples:
+          - https://webhook.site/test
+        event_type:
+          type: string
+          title: Event Type
+          description: Type of event that triggers the webhook.
+          examples:
+          - interview_completed
+        is_active:
+          type: boolean
+          title: Is Active
+          description: Whether the webhook is active.
+        created_at:
+          type: number
+          title: Created At
+          description: Unix timestamp when the webhook was created.
+          examples:
+          - 1739612400.0
+        updated_at:
+          type: number
+          title: Updated At
+          description: Unix timestamp when the webhook was last updated.
+          examples:
+          - 1739617200.0
+      type: object
+      required:
+      - webhook_id
+      - posting_id
+      - webhook_url
+      - event_type
+      - is_active
+      - created_at
+      - updated_at
+      title: WebhookResponse
+      description: A webhook configuration.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    SingleResponse_WebhookResponse_:
+      properties:
+        data:
+          $ref: '#/components/schemas/WebhookResponse'
+        meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+          description: Optional metadata. Shape varies by endpoint.
+      type: object
+      required:
+      - data
+      title: SingleResponse[WebhookResponse]
+    CreateWebhookRequest:
+      properties:
+        posting_id:
+          type: string
+          title: Posting Id
+          description: ID of the posting this webhook is for.
+          examples:
+          - 13D77095
+        webhook_url:
+          type: string
+          title: Webhook Url
+          description: Destination URL for webhook delivery.
+          examples:
+          - https://webhook.site/test
+        event_type:
+          type: string
+          title: Event Type
+          description: 'Type of event that triggers the webhook: ''interview_completed'', ''candidate_ingested'', etc.'
+          examples:
+          - interview_completed
+      type: object
+      required:
+      - posting_id
+      - webhook_url
+      - event_type
+      title: CreateWebhookRequest
+      description: Request body for creating a webhook.
+    APIErrorResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/APIError'
+      type: object
+      required:
+      - error
+      title: APIErrorResponse
+    PaginationMeta:
+      properties:
+        has_more:
+          type: boolean
+          title: Has More
+          description: Whether more results exist beyond this page
+        total_count:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Count
+          description: Total number of results (if available)
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: URL of this resource
+      type: object
+      required:
+      - has_more
+      title: PaginationMeta
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: API key for authentication. Pass your key in the X-API-KEY header.

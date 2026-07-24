@@ -1,0 +1,395 @@
+openapi: 3.1.0
+info:
+  title: HeyMilo Public ATS Domains API
+  description: External developer-facing API for HeyMilo. Create interviewers with agentic workflows, ingest candidates, retrieve interview results, and manage workspace resources.
+  version: 2.0.0
+servers:
+- url: https://api.heymilo.ai
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: Domains
+  description: Manage custom domains for white-labelled interview URLs.
+paths:
+  /api/v2/domains:
+    get:
+      tags:
+      - Domains
+      summary: List custom domains
+      description: Returns all custom domains configured for the workspace.
+      operationId: listDomains
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 20
+          title: Limit
+      - name: starting_after
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Starting After
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse_CustomDomainResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/domains/{config_id}:
+    get:
+      tags:
+      - Domains
+      summary: Get a custom domain
+      description: Returns a single custom domain configuration by ID.
+      operationId: getDomain
+      parameters:
+      - name: config_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Config Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_CustomDomainResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Domain not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    APIErrorDetail:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Machine-readable error code
+          examples:
+          - invalid_param
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation
+          examples:
+          - title must be between 3 and 200 characters
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Param
+          description: Parameter that caused the error
+          examples:
+          - title
+      type: object
+      required:
+      - code
+      - message
+      title: APIErrorDetail
+    CustomDomainResponse:
+      properties:
+        object:
+          type: string
+          const: domain
+          title: Object
+          description: Object type identifier.
+          default: domain
+        id:
+          type: string
+          title: Id
+          description: Unique domain configuration identifier.
+          examples:
+          - BCE1C810
+        domain:
+          type: string
+          title: Domain
+          description: The custom domain name.
+          examples:
+          - interviews.acme.com
+        cname_target:
+          type: string
+          title: Cname Target
+          description: CNAME target for DNS configuration.
+          examples:
+          - ingress.heymilo.ai
+        status:
+          type: string
+          title: Status
+          description: 'Domain verification status: ''pending'', ''active'', ''error''.'
+          examples:
+          - active
+        active:
+          type: boolean
+          title: Active
+          description: Whether the domain is verified and active for use.
+          examples:
+          - true
+        created_at:
+          type: number
+          title: Created At
+          description: Unix timestamp when the domain was created.
+          examples:
+          - 1739612400.0
+        updated_at:
+          type: number
+          title: Updated At
+          description: Unix timestamp when the domain was last updated.
+          examples:
+          - 1739617200.0
+      type: object
+      required:
+      - id
+      - domain
+      - cname_target
+      - status
+      - active
+      - created_at
+      - updated_at
+      title: CustomDomainResponse
+      description: 'A custom domain for candidate-facing interview URLs.
+
+
+        Custom domains allow workspaces to white-label the candidate
+
+        experience (e.g. ``interviews.acme.com`` instead of
+
+        ``candidates.heymilo.io``). Domains require CNAME verification
+
+        pointing to ``ingress.heymilo.ai``.'
+    APIError:
+      properties:
+        type:
+          type: string
+          title: Type
+          description: Error category
+          examples:
+          - invalid_request_error
+        code:
+          type: string
+          title: Code
+          description: Machine-readable error code
+          examples:
+          - validation_error
+        message:
+          type: string
+          title: Message
+          description: Human-readable summary
+          examples:
+          - The request body failed validation
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Param
+          description: Top-level parameter that caused the error
+        doc_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Doc Url
+          description: Link to relevant documentation
+        errors:
+          items:
+            $ref: '#/components/schemas/APIErrorDetail'
+          type: array
+          title: Errors
+          description: Detailed per-field validation errors
+      type: object
+      required:
+      - type
+      - code
+      - message
+      title: APIError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    SingleResponse_CustomDomainResponse_:
+      properties:
+        data:
+          $ref: '#/components/schemas/CustomDomainResponse'
+        meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+          description: Optional metadata. Shape varies by endpoint.
+      type: object
+      required:
+      - data
+      title: SingleResponse[CustomDomainResponse]
+    ListResponse_CustomDomainResponse_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/CustomDomainResponse'
+          type: array
+          title: Data
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      type: object
+      required:
+      - data
+      - pagination
+      title: ListResponse[CustomDomainResponse]
+    APIErrorResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/APIError'
+      type: object
+      required:
+      - error
+      title: APIErrorResponse
+    PaginationMeta:
+      properties:
+        has_more:
+          type: boolean
+          title: Has More
+          description: Whether more results exist beyond this page
+        total_count:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Count
+          description: Total number of results (if available)
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: URL of this resource
+      type: object
+      required:
+      - has_more
+      title: PaginationMeta
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: API key for authentication. Pass your key in the X-API-KEY header.

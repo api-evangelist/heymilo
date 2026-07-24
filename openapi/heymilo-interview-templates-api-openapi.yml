@@ -1,0 +1,411 @@
+openapi: 3.1.0
+info:
+  title: HeyMilo Public ATS Interview Templates API
+  description: External developer-facing API for HeyMilo. Create interviewers with agentic workflows, ingest candidates, retrieve interview results, and manage workspace resources.
+  version: 2.0.0
+servers:
+- url: https://api.heymilo.ai
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: Interview Templates
+  description: View interview templates, reusable agent configurations cloned from a blueprint posting (workflow, questions, criteria, agent settings).
+paths:
+  /api/v2/interview-templates:
+    get:
+      tags:
+      - Interview Templates
+      summary: List interview templates
+      description: Returns all interview templates configured for the workspace. Interview templates are reusable agent configurations cloned from a blueprint posting.
+      operationId: listInterviewTemplates
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 20
+          title: Limit
+      - name: starting_after
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Starting After
+      - name: search
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-insensitive substring filter applied to the template name.
+          title: Search
+        description: Case-insensitive substring filter applied to the template name.
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse_InterviewTemplateResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/interview-templates/{template_id}:
+    get:
+      tags:
+      - Interview Templates
+      summary: Get an interview template
+      description: Returns a single interview template by ID.
+      operationId: getInterviewTemplate
+      parameters:
+      - name: template_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Template Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_InterviewTemplateResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Interview template not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    APIErrorDetail:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Machine-readable error code
+          examples:
+          - invalid_param
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation
+          examples:
+          - title must be between 3 and 200 characters
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Param
+          description: Parameter that caused the error
+          examples:
+          - title
+      type: object
+      required:
+      - code
+      - message
+      title: APIErrorDetail
+    ListResponse_InterviewTemplateResponse_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/InterviewTemplateResponse'
+          type: array
+          title: Data
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      type: object
+      required:
+      - data
+      - pagination
+      title: ListResponse[InterviewTemplateResponse]
+    APIError:
+      properties:
+        type:
+          type: string
+          title: Type
+          description: Error category
+          examples:
+          - invalid_request_error
+        code:
+          type: string
+          title: Code
+          description: Machine-readable error code
+          examples:
+          - validation_error
+        message:
+          type: string
+          title: Message
+          description: Human-readable summary
+          examples:
+          - The request body failed validation
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Param
+          description: Top-level parameter that caused the error
+        doc_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Doc Url
+          description: Link to relevant documentation
+        errors:
+          items:
+            $ref: '#/components/schemas/APIErrorDetail'
+          type: array
+          title: Errors
+          description: Detailed per-field validation errors
+      type: object
+      required:
+      - type
+      - code
+      - message
+      title: APIError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    SingleResponse_InterviewTemplateResponse_:
+      properties:
+        data:
+          $ref: '#/components/schemas/InterviewTemplateResponse'
+        meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+          description: Optional metadata. Shape varies by endpoint.
+      type: object
+      required:
+      - data
+      title: SingleResponse[InterviewTemplateResponse]
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    InterviewTemplateResponse:
+      properties:
+        object:
+          type: string
+          const: interview_template
+          title: Object
+          description: Object type identifier.
+          default: interview_template
+        id:
+          type: string
+          title: Id
+          description: Unique interview template identifier.
+          examples:
+          - IT_abc123
+        template_code:
+          type: string
+          title: Template Code
+          description: Human-readable template code used for ATS integrations. Alphanumeric and dashes only, max 32 characters, unique per workspace.
+          examples:
+          - senior-swe-template
+        name:
+          type: string
+          title: Name
+          description: Human-readable template name.
+          examples:
+          - Senior Software Engineer Template
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Optional description of the template.
+          examples:
+          - Standard 3-stage interview for senior backend roles.
+        posting_id:
+          type: string
+          title: Posting Id
+          description: ID of the blueprint posting whose workflow, questions, and agent configuration this template captures.
+          examples:
+          - posting_xyz789
+        is_default:
+          type: boolean
+          title: Is Default
+          description: Whether this template is the workspace default.
+          default: false
+        created_at:
+          type: number
+          title: Created At
+          description: Unix timestamp when the template was created.
+          examples:
+          - 1739612400.0
+        updated_at:
+          type: number
+          title: Updated At
+          description: Unix timestamp when the template was last updated.
+          examples:
+          - 1739617200.0
+      type: object
+      required:
+      - id
+      - template_code
+      - name
+      - posting_id
+      - created_at
+      - updated_at
+      title: InterviewTemplateResponse
+      description: 'A reusable interview agent configuration.
+
+
+        Interview templates capture a blueprint posting''s full agentic
+
+        workflow (questions, criteria, agent settings) so it can be cloned
+
+        onto new postings or used as the seed for new agents. Each template
+
+        references its blueprint posting via ``posting_id``.'
+    APIErrorResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/APIError'
+      type: object
+      required:
+      - error
+      title: APIErrorResponse
+    PaginationMeta:
+      properties:
+        has_more:
+          type: boolean
+          title: Has More
+          description: Whether more results exist beyond this page
+        total_count:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Count
+          description: Total number of results (if available)
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: URL of this resource
+      type: object
+      required:
+      - has_more
+      title: PaginationMeta
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: API key for authentication. Pass your key in the X-API-KEY header.

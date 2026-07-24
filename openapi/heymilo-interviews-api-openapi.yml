@@ -1,0 +1,1699 @@
+openapi: 3.1.0
+info:
+  title: HeyMilo Public ATS Interviews API
+  description: External developer-facing API for HeyMilo. Create interviewers with agentic workflows, ingest candidates, retrieve interview results, and manage workspace resources.
+  version: 2.0.0
+servers:
+- url: https://api.heymilo.ai
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: Interviews
+  description: Retrieve full interview results (scorecard, transcript, resume evaluation) and manage per-interview metadata.
+paths:
+  /api/v2/interviews/{interview_id}/data:
+    get:
+      tags:
+      - Interviews
+      summary: Get full interview data
+      description: Retrieve the full interview results across all workflow steps. Includes per-agent results (scorecard, transcript, resume evaluation, SMS screening, form results). Returns status 'not_ready' if the candidate has not finished.
+      operationId: getInterviewData
+      parameters:
+      - name: interview_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Interview Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_InterviewDataResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/interviews/{interview_id}/metadata:
+    get:
+      tags:
+      - Interviews
+      summary: Get interview metadata
+      description: Retrieve the key-value metadata attached to a specific interview.
+      operationId: getInterviewMetadata
+      parameters:
+      - name: interview_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Interview Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_MetadataResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Interviews
+      summary: Set interview metadata
+      description: Set or update metadata for a specific interview. Up to 50 keys, each key max 40 chars, each value max 500 chars. All values must be strings.
+      operationId: setInterviewMetadata
+      parameters:
+      - name: interview_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Interview Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetadataRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_MetadataResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Interviews
+      summary: Delete interview metadata
+      description: Remove all metadata from a specific interview.
+      operationId: deleteInterviewMetadata
+      parameters:
+      - name: interview_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Interview Id
+      - name: X-API-KEY
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: X-Workspace-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Workspace-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponse_MetadataResponse_'
+        '401':
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    InterviewDataResponse:
+      properties:
+        object:
+          type: string
+          const: interview_data
+          title: Object
+          description: Object type identifier.
+          default: interview_data
+        interview_id:
+          type: string
+          title: Interview Id
+          description: Unique interview identifier.
+          examples:
+          - D536A69A4090E13F
+        candidate_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Candidate Id
+          description: Candidate identifier (shared across postings).
+          examples:
+          - cand_def456
+        posting_id:
+          type: string
+          title: Posting Id
+          description: Posting this interview belongs to.
+          examples:
+          - 13D77095
+        name:
+          type: string
+          title: Name
+          description: Candidate's full name.
+          examples:
+          - Jane Smith
+        email:
+          type: string
+          title: Email
+          description: Candidate's email.
+          examples:
+          - jane.smith@example.com
+        score:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Score
+          description: Overall match score (0-100).
+          examples:
+          - 78.5
+        status:
+          type: string
+          title: Status
+          description: 'Current candidate status: ''pending'', ''in_progress'', ''evaluating'', ''completed'', ''shortlisted'', ''dismissed'', ''knocked_out''. ''evaluating'' means all workflow steps are done but the final score is still being computed.'
+          examples:
+          - completed
+        workflow:
+          anyOf:
+          - $ref: '#/components/schemas/CandidateWorkflow'
+          - type: 'null'
+          description: Step-by-step workflow progress.
+        web_interview:
+          anyOf:
+          - $ref: '#/components/schemas/WebInterviewResult'
+          - type: 'null'
+          description: Voice/video interview results (null if not in workflow).
+        resume:
+          anyOf:
+          - $ref: '#/components/schemas/ResumeResult'
+          - type: 'null'
+          description: Resume screening results (null if not in workflow).
+        sms:
+          anyOf:
+          - $ref: '#/components/schemas/SMSResult'
+          - type: 'null'
+          description: SMS screening results (null if not in workflow).
+        form:
+          anyOf:
+          - $ref: '#/components/schemas/FormResult'
+          - type: 'null'
+          description: Form screening results (null if not in workflow).
+        cheat_detection:
+          anyOf:
+          - $ref: '#/components/schemas/CheatDetection'
+          - type: 'null'
+          description: Aggregated cheat / integrity detection results. Null when cheat detection is not configured for the posting.
+        metadata:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Metadata
+          description: Set of key-value pairs for storing additional information. Up to 50 keys, each key max 40 chars, each value max 500 chars.
+          examples:
+          - external_id: interview_abc
+        data:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Data
+          description: Additional candidate data supplied at ingestion time.
+      type: object
+      required:
+      - interview_id
+      - posting_id
+      - name
+      - email
+      - status
+      title: InterviewDataResponse
+      description: 'Full interview results across all workflow steps.
+
+
+        Contains the candidate details plus per-agent results. Fields for
+
+        agents not in the posting''s workflow will be null.'
+    APIError:
+      properties:
+        type:
+          type: string
+          title: Type
+          description: Error category
+          examples:
+          - invalid_request_error
+        code:
+          type: string
+          title: Code
+          description: Machine-readable error code
+          examples:
+          - validation_error
+        message:
+          type: string
+          title: Message
+          description: Human-readable summary
+          examples:
+          - The request body failed validation
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Param
+          description: Top-level parameter that caused the error
+        doc_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Doc Url
+          description: Link to relevant documentation
+        errors:
+          items:
+            $ref: '#/components/schemas/APIErrorDetail'
+          type: array
+          title: Errors
+          description: Detailed per-field validation errors
+      type: object
+      required:
+      - type
+      - code
+      - message
+      title: APIError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    UnusualDelayResult:
+      properties:
+        delay_detected:
+          type: boolean
+          title: Delay Detected
+          description: Whether unusual delays were detected.
+        delay_confidence:
+          type: number
+          title: Delay Confidence
+          description: Confidence of the detection (0.0-1.0).
+          examples:
+          - 0.58
+        unusual_delay_instances:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Unusual Delay Instances
+          description: Individual delay instances. Each references the question and response text along with timing details.
+        overall_score:
+          type: number
+          title: Overall Score
+          description: Overall suspiciousness score (0.0-1.0).
+          examples:
+          - 0.5
+        confidence_level:
+          type: number
+          title: Confidence Level
+          description: Aggregate confidence level (0.0-1.0).
+          examples:
+          - 0.6
+      type: object
+      required:
+      - delay_detected
+      - delay_confidence
+      - overall_score
+      - confidence_level
+      title: UnusualDelayResult
+      description: Detection of unusual response delays (possible external assistance).
+    CheatingInstance:
+      properties:
+        reasoning:
+          type: string
+          title: Reasoning
+          description: Why this was flagged as cheating.
+          examples:
+          - Answer matches AI-generated phrasing patterns.
+        transcript_references:
+          items:
+            $ref: '#/components/schemas/CheatTranscriptReference'
+          type: array
+          title: Transcript References
+          description: Transcript snippets supporting this instance.
+      type: object
+      required:
+      - reasoning
+      title: CheatingInstance
+      description: A single detected cheating occurrence with supporting evidence.
+    SMSCriterionResult:
+      properties:
+        criteria_id:
+          type: string
+          title: Criteria Id
+          description: Unique criterion identifier.
+          examples:
+          - sms_abc123
+        criteria_text:
+          type: string
+          title: Criteria Text
+          description: The question asked via SMS.
+          examples:
+          - Are you available to start within 2 weeks?
+        passed:
+          type: boolean
+          title: Passed
+          description: Whether the candidate passed this criterion.
+        confidence:
+          type: number
+          title: Confidence
+          description: AI confidence (0.0-1.0).
+          examples:
+          - 0.85
+        is_dealbreaker:
+          type: boolean
+          title: Is Dealbreaker
+          description: Whether failing this criterion disqualifies the candidate.
+          default: false
+        reasons:
+          items:
+            type: string
+          type: array
+          title: Reasons
+          description: AI reasoning.
+      type: object
+      required:
+      - criteria_id
+      - criteria_text
+      - passed
+      - confidence
+      title: SMSCriterionResult
+      description: Evaluation of a single SMS screening criterion.
+    CheatDetection:
+      properties:
+        object:
+          type: string
+          const: cheat_detection
+          title: Object
+          description: Object type identifier.
+          default: cheat_detection
+        overall_confidence:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Overall Confidence
+          description: Aggregate confidence across all signals (0.0-1.0).
+          examples:
+          - 0.64
+        overall_ranking:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Overall Ranking
+          description: Severity ranking (1=no cheating, 5=highly detected).
+          examples:
+          - 2
+        enabled:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enabled
+          description: Whether cheat detection is enabled for the posting.
+          examples:
+          - true
+        threshold:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Threshold
+          description: Configured detection threshold (0-100).
+          examples:
+          - 70
+        types:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Types
+          description: Enabled detection types, e.g. 'tab_switching', 'ai_scripted_answer', 'multiple_people', 'multiple_speakers', 'phone_detection', 'unusual_delays', 'facial_behaviour'.
+          examples:
+          - - tab_switching
+            - ai_scripted_answer
+        web_interview:
+          anyOf:
+          - $ref: '#/components/schemas/WebInterviewCheat'
+          - type: 'null'
+          description: Cheat signals for the web interview step.
+        resume:
+          anyOf:
+          - $ref: '#/components/schemas/ResumeCheat'
+          - type: 'null'
+          description: Cheat signals for the resume step.
+      type: object
+      title: CheatDetection
+      description: 'Aggregated cheat / integrity detection across interview steps.
+
+
+        Present only when the posting has cheat detection configured. When
+
+        ``enabled`` is false, detection sub-blocks are typically null (tab-switch
+
+        activity may still be reported).'
+    WorkflowStepStatus:
+      properties:
+        step_id:
+          type: string
+          title: Step Id
+          description: Workflow step identifier.
+          examples:
+          - agent_vi_001
+        order:
+          type: integer
+          title: Order
+          description: Position in the workflow (1-based).
+          examples:
+          - 1
+        status:
+          type: string
+          title: Status
+          description: 'Step status: ''not_started'', ''in_progress'', ''completed'', ''knocked_out''.'
+          examples:
+          - completed
+        started:
+          type: boolean
+          title: Started
+          description: Whether the candidate has started this step.
+          examples:
+          - true
+        completed:
+          type: boolean
+          title: Completed
+          description: Whether the candidate has completed this step.
+          examples:
+          - true
+        knocked_out:
+          type: boolean
+          title: Knocked Out
+          description: Whether the candidate was disqualified at this step.
+          default: false
+          examples:
+          - false
+        last_updated_at:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Last Updated At
+          description: Unix timestamp of the last status change.
+          examples:
+          - 1739713800.0
+      type: object
+      required:
+      - step_id
+      - order
+      - status
+      - started
+      - completed
+      title: WorkflowStepStatus
+      description: Status of a single workflow step for a candidate.
+    SingleResponse_MetadataResponse_:
+      properties:
+        data:
+          $ref: '#/components/schemas/MetadataResponse'
+        meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+          description: Optional metadata. Shape varies by endpoint.
+      type: object
+      required:
+      - data
+      title: SingleResponse[MetadataResponse]
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ResumeCheat:
+      properties:
+        gpt_detection:
+          anyOf:
+          - $ref: '#/components/schemas/ResumeGptDetectionResult'
+          - type: 'null'
+          description: Resume AI-generation detection.
+      type: object
+      title: ResumeCheat
+      description: Cheat-detection signals for the resume step.
+    TranscriptCheatResult:
+      properties:
+        cheating_detected:
+          type: boolean
+          title: Cheating Detected
+          description: Whether cheating was detected in the transcript.
+        cheating_confidence:
+          type: number
+          title: Cheating Confidence
+          description: Confidence of the detection (0.0-1.0).
+          examples:
+          - 0.82
+        cheating_instances:
+          items:
+            $ref: '#/components/schemas/CheatingInstance'
+          type: array
+          title: Cheating Instances
+          description: Individual detected instances.
+      type: object
+      required:
+      - cheating_detected
+      - cheating_confidence
+      title: TranscriptCheatResult
+      description: Transcript-based cheat detection (AI/scripted answers).
+    LLMDetectedSegment:
+      properties:
+        segment_text:
+          type: string
+          title: Segment Text
+          description: The flagged segment text.
+          examples:
+          - In conclusion, the optimal strategy would be...
+        segment_confidence:
+          type: number
+          title: Segment Confidence
+          description: Confidence the segment is LLM-generated (0.0-1.0).
+          examples:
+          - 0.77
+        reasoning:
+          type: string
+          title: Reasoning
+          description: Why this segment was flagged.
+          examples:
+          - Highly formulaic structure uncommon in speech.
+      type: object
+      required:
+      - segment_text
+      - segment_confidence
+      - reasoning
+      title: LLMDetectedSegment
+      description: A transcript segment flagged as LLM-generated.
+    MetadataResponse:
+      properties:
+        object:
+          type: string
+          title: Object
+          description: Object type identifier.
+          examples:
+          - metadata
+        metadata:
+          additionalProperties:
+            type: string
+          type: object
+          title: Metadata
+          description: Key-value metadata pairs.
+          examples:
+          - external_id: ats_12345
+            source: workday
+      type: object
+      required:
+      - object
+      title: MetadataResponse
+      description: Response containing metadata for a resource.
+    SMSMessage:
+      properties:
+        role:
+          type: string
+          title: Role
+          description: 'Message sender: ''agent'' or ''candidate''.'
+          examples:
+          - candidate
+        text:
+          type: string
+          title: Text
+          description: Message content.
+          examples:
+          - Yes, I can start within 2 weeks.
+        timestamp:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Timestamp
+          description: Unix timestamp when the message was sent.
+          examples:
+          - 1708012800.0
+      type: object
+      required:
+      - role
+      - text
+      title: SMSMessage
+      description: A single message in an SMS screening conversation.
+    IntegrityAggregated:
+      properties:
+        movements:
+          items:
+            $ref: '#/components/schemas/IntegrityMovementEvent'
+          type: array
+          title: Movements
+          description: Chronologically sorted movement events.
+      type: object
+      title: IntegrityAggregated
+      description: Aggregated, time-sorted movement events from video integrity analysis.
+    ScorecardQuestion:
+      properties:
+        question_id:
+          type: string
+          title: Question Id
+          description: Unique question identifier.
+          examples:
+          - vq_abc123
+        question_text:
+          type: string
+          title: Question Text
+          description: The question as asked to the candidate.
+          examples:
+          - Walk me through how you would design a URL shortener.
+        score:
+          type: integer
+          title: Score
+          description: Score (1-10). 1 = weak, 10 = exceptional.
+          examples:
+          - 7
+        score_weight:
+          type: integer
+          title: Score Weight
+          description: Importance weight (1-10). Higher = more important.
+          default: 5
+          examples:
+          - 8
+        evaluation_summary:
+          type: string
+          title: Evaluation Summary
+          description: AI-generated summary of the candidate's response.
+          examples:
+          - Strong system design thinking with clear trade-offs...
+        evaluation_criteria:
+          type: string
+          title: Evaluation Criteria
+          description: Criteria used to evaluate this question.
+          examples:
+          - Evaluate system design, scalability, and trade-offs.
+        score_1_description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Score 1 Description
+          description: What constitutes a score of 1.
+          examples:
+          - Cannot articulate a basic design.
+        score_5_description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Score 5 Description
+          description: What constitutes a score of 5 (midpoint anchor on 1-10 scale).
+          examples:
+          - Comprehensive design with trade-off analysis.
+        not_scored:
+          type: boolean
+          title: Not Scored
+          description: If true, this question was informational only.
+          default: false
+        rank:
+          type: integer
+          title: Rank
+          description: Order in which this question was asked (1-based).
+          examples:
+          - 1
+        transcript:
+          items:
+            $ref: '#/components/schemas/TranscriptEntry'
+          type: array
+          title: Transcript
+          description: Dialogue for this specific question.
+      type: object
+      required:
+      - question_id
+      - question_text
+      - score
+      - evaluation_summary
+      - evaluation_criteria
+      - rank
+      title: ScorecardQuestion
+      description: Evaluation result for a single scored question.
+    MetadataRequest:
+      properties:
+        metadata:
+          additionalProperties:
+            type: string
+          type: object
+          title: Metadata
+          description: Key-value pairs to set. Up to 50 keys, each key max 40 chars, each value max 500 chars. All values must be strings.
+          examples:
+          - external_id: ats_12345
+            source: workday
+      type: object
+      required:
+      - metadata
+      title: MetadataRequest
+      description: Request body for setting metadata on a resource.
+    SingleResponse_InterviewDataResponse_:
+      properties:
+        data:
+          $ref: '#/components/schemas/InterviewDataResponse'
+        meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+          description: Optional metadata. Shape varies by endpoint.
+      type: object
+      required:
+      - data
+      title: SingleResponse[InterviewDataResponse]
+    GPTZeroMetrics:
+      properties:
+        completely_generated_probability:
+          type: number
+          title: Completely Generated Probability
+          description: Probability the content is fully AI-generated (0.0-1.0).
+          examples:
+          - 0.65
+        overall_ai_score:
+          type: number
+          title: Overall Ai Score
+          description: Overall AI score (0.0-1.0).
+          examples:
+          - 0.7
+        average_generated_probability:
+          type: number
+          title: Average Generated Probability
+          description: Average per-segment generated probability (0.0-1.0).
+          examples:
+          - 0.6
+      type: object
+      required:
+      - completely_generated_probability
+      - overall_ai_score
+      - average_generated_probability
+      title: GPTZeroMetrics
+      description: GPTZero scoring metrics for LLM detection.
+    APIErrorResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/APIError'
+      type: object
+      required:
+      - error
+      title: APIErrorResponse
+    ResumeScoreCriterion:
+      properties:
+        criteria_id:
+          type: string
+          title: Criteria Id
+          description: Unique criterion identifier.
+          examples:
+          - rsc_abc123
+        criteria_text:
+          type: string
+          title: Criteria Text
+          description: The criterion as defined by the recruiter.
+          examples:
+          - Experience with distributed systems
+        score:
+          type: number
+          title: Score
+          description: Score (0.0-10.0).
+          examples:
+          - 8.5
+        confidence:
+          type: number
+          title: Confidence
+          description: AI confidence (0.0-1.0).
+          examples:
+          - 0.89
+        reasons:
+          items:
+            type: string
+          type: array
+          title: Reasons
+          description: AI reasoning for the score.
+      type: object
+      required:
+      - criteria_id
+      - criteria_text
+      - score
+      - confidence
+      title: ResumeScoreCriterion
+      description: Evaluation of a single resume scoring criterion.
+    LLMDetectionResult:
+      properties:
+        llm_generated_detected:
+          type: boolean
+          title: Llm Generated Detected
+          description: Whether LLM-generated speech was detected.
+        detection_confidence:
+          type: number
+          title: Detection Confidence
+          description: Confidence of the detection (0.0-1.0).
+          examples:
+          - 0.71
+        llm_detected_segments:
+          items:
+            $ref: '#/components/schemas/LLMDetectedSegment'
+          type: array
+          title: Llm Detected Segments
+          description: Segments flagged as LLM-generated.
+        gptzero_metrics:
+          anyOf:
+          - $ref: '#/components/schemas/GPTZeroMetrics'
+          - type: 'null'
+          description: Underlying GPTZero metrics, when available.
+      type: object
+      required:
+      - llm_generated_detected
+      - detection_confidence
+      title: LLMDetectionResult
+      description: Detection of LLM-generated speech during the interview.
+    IntegrityMovementEvent:
+      properties:
+        type:
+          type: string
+          title: Type
+          description: 'Movement type: ''Eye Movement'', ''Head Movement'', ''Mouth Movement''.'
+          examples:
+          - Eye Movement
+        confidence:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Confidence
+          description: Confidence of the detection (0.0-1.0).
+          examples:
+          - 0.8
+        image:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image
+          description: URL to a captured frame, if available.
+        timestamp:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Timestamp
+          description: Seconds from the start of the interview.
+          examples:
+          - 91.0
+      type: object
+      required:
+      - type
+      title: IntegrityMovementEvent
+      description: A single eye/head/mouth movement event from video integrity analysis.
+    ResumeEligibilityCriterion:
+      properties:
+        criteria_id:
+          type: string
+          title: Criteria Id
+          description: Unique criterion identifier.
+          examples:
+          - rec_abc123
+        criteria_text:
+          type: string
+          title: Criteria Text
+          description: The criterion description.
+          examples:
+          - Must have a Bachelor's degree in CS
+        passed:
+          type: boolean
+          title: Passed
+          description: Whether the candidate meets this criterion.
+        confidence:
+          type: number
+          title: Confidence
+          description: AI confidence (0.0-1.0).
+          examples:
+          - 0.92
+        reasons:
+          items:
+            type: string
+          type: array
+          title: Reasons
+          description: AI reasoning for the pass/fail.
+      type: object
+      required:
+      - criteria_id
+      - criteria_text
+      - passed
+      - confidence
+      title: ResumeEligibilityCriterion
+      description: Evaluation of a single resume eligibility (pass/fail) criterion.
+    CandidateWorkflow:
+      properties:
+        steps:
+          items:
+            $ref: '#/components/schemas/WorkflowStepStatus'
+          type: array
+          title: Steps
+          description: Ordered list of workflow step statuses.
+        all_complete:
+          type: boolean
+          title: All Complete
+          description: True when every step has been completed.
+          examples:
+          - false
+        last_activity_at:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Last Activity At
+          description: Unix timestamp of the candidate's most recent interaction with any step.
+          examples:
+          - 1739715600.0
+      type: object
+      required:
+      - steps
+      - all_complete
+      title: CandidateWorkflow
+      description: Overall workflow progress for a candidate.
+    TranscriptEntry:
+      properties:
+        speaker:
+          type: string
+          title: Speaker
+          description: 'Who spoke: ''Interviewer'', ''Candidate'', or ''System''.'
+          examples:
+          - Candidate
+        text:
+          type: string
+          title: Text
+          description: The spoken or written text.
+          examples:
+          - I have 5 years of experience building distributed systems.
+        timestamp:
+          type: number
+          title: Timestamp
+          description: Seconds from the start of the interview.
+          examples:
+          - 42.5
+        timestamp_str:
+          type: string
+          title: Timestamp Str
+          description: Human-readable timestamp (MM:SS).
+          examples:
+          - 00:42
+      type: object
+      required:
+      - speaker
+      - text
+      - timestamp
+      - timestamp_str
+      title: TranscriptEntry
+      description: A single turn in an interview conversation.
+    FormQuestionResult:
+      properties:
+        question_id:
+          type: string
+          title: Question Id
+          description: Unique question identifier.
+          examples:
+          - fq_abc123
+        question_text:
+          type: string
+          title: Question Text
+          description: The question displayed on the form.
+          examples:
+          - Are you authorized to work in the US?
+        question_type:
+          type: string
+          title: Question Type
+          description: 'Form field type: textarea, number, multiple-choice, file-upload, slider, date.'
+          examples:
+          - multiple-choice
+        is_knockout:
+          type: boolean
+          title: Is Knockout
+          description: Whether this is a knockout (pass/fail) question.
+        passed:
+          type: boolean
+          title: Passed
+          description: Whether the candidate's answer passed validation.
+        candidate_answer:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Candidate Answer
+          description: The candidate's submitted answer.
+          examples:
+          - 'yes'
+        expected_answer:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expected Answer
+          description: The expected correct answer (for knockout questions).
+          examples:
+          - 'yes'
+      type: object
+      required:
+      - question_id
+      - question_text
+      - question_type
+      - is_knockout
+      - passed
+      title: FormQuestionResult
+      description: Result of a single form screening question.
+    ResumeResult:
+      properties:
+        object:
+          type: string
+          const: resume_result
+          title: Object
+          description: Object type identifier.
+          default: resume_result
+        interview_id:
+          type: string
+          title: Interview Id
+          description: Interview this result belongs to.
+          examples:
+          - D536A69A4090E13F
+        overall_score:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Overall Score
+          description: Weighted score across all criteria (0.0-100.0).
+          examples:
+          - 78.5
+        is_eligible:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Eligible
+          description: Whether the candidate meets all eligibility criteria.
+        score_criteria:
+          items:
+            $ref: '#/components/schemas/ResumeScoreCriterion'
+          type: array
+          title: Score Criteria
+          description: Individual scoring criterion results.
+        eligibility_criteria:
+          items:
+            $ref: '#/components/schemas/ResumeEligibilityCriterion'
+          type: array
+          title: Eligibility Criteria
+          description: Individual eligibility criterion results.
+        resume_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Resume Url
+          description: URL to the uploaded resume.
+          examples:
+          - https://cdn.heymilo.io/resumes/abc123.pdf
+      type: object
+      required:
+      - interview_id
+      title: ResumeResult
+      description: Complete results for the resume screening step.
+    WebInterviewResult:
+      properties:
+        object:
+          type: string
+          const: web_interview_result
+          title: Object
+          description: Object type identifier.
+          default: web_interview_result
+        interview_id:
+          type: string
+          title: Interview Id
+          description: Interview this result belongs to.
+          examples:
+          - D536A69A4090E13F
+        match_score:
+          type: integer
+          title: Match Score
+          description: Overall match score (0-100).
+          examples:
+          - 82
+        highlights:
+          items:
+            type: string
+          type: array
+          title: Highlights
+          description: Candidate strengths identified by AI.
+          examples:
+          - - Strong system design skills
+        lowlights:
+          items:
+            type: string
+          type: array
+          title: Lowlights
+          description: Areas for improvement.
+          examples:
+          - - Limited frontend experience
+        scorecard:
+          items:
+            $ref: '#/components/schemas/ScorecardQuestion'
+          type: array
+          title: Scorecard
+          description: Question-by-question evaluation.
+        speech_score:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Speech Score
+          description: Communication/speech score (0.0-5.0).
+          examples:
+          - 3.5
+        transcript:
+          items:
+            $ref: '#/components/schemas/TranscriptEntry'
+          type: array
+          title: Transcript
+          description: Full chronological interview transcript.
+        audio_recording_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Audio Recording Url
+          description: Signed URL to audio recording.
+          examples:
+          - https://cdn.heymilo.io/recordings/abc123.mp3
+        video_recording_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Video Recording Url
+          description: Signed URL to video recording (if enabled).
+          examples:
+          - https://cdn.heymilo.io/recordings/abc123.mp4
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+          description: Tags extracted from the interview.
+      type: object
+      required:
+      - interview_id
+      - match_score
+      title: WebInterviewResult
+      description: Complete results for the web interview (voice/video) step.
+    APIErrorDetail:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Machine-readable error code
+          examples:
+          - invalid_param
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation
+          examples:
+          - title must be between 3 and 200 characters
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Param
+          description: Parameter that caused the error
+          examples:
+          - title
+      type: object
+      required:
+      - code
+      - message
+      title: APIErrorDetail
+    WebInterviewCheat:
+      properties:
+        cheat_detection_result:
+          anyOf:
+          - $ref: '#/components/schemas/TranscriptCheatResult'
+          - type: 'null'
+          description: Transcript-based cheat detection (v1).
+        llm_detection_result:
+          anyOf:
+          - $ref: '#/components/schemas/LLMDetectionResult'
+          - type: 'null'
+          description: LLM-generated speech detection (v1).
+        unusual_delay_detection:
+          anyOf:
+          - $ref: '#/components/schemas/UnusualDelayResult'
+          - type: 'null'
+          description: Unusual response-delay detection (v1).
+        tab_switch_detection:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Tab Switch Detection
+          description: 'Tab-switch activity: total_count, events, and first/last switch timestamps.'
+          examples:
+          - first_switch_timestamp: 42.0
+            total_count: 3
+        interview_integrity:
+          anyOf:
+          - $ref: '#/components/schemas/InterviewIntegrityResult'
+          - type: 'null'
+          description: Video integrity analysis results (v1).
+        integrity_analysis_v2:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Integrity Analysis V2
+          description: Cheat-detection v2 analysis result — the raw multi-modal breach-detection payload from the integrity service (categories, breaches, alerts, scores). Null when v2 analysis is unavailable.
+      type: object
+      title: WebInterviewCheat
+      description: 'Cheat-detection signals for the web (voice/video) interview step.
+
+
+        Carries both the v1 detection signals (transcript / LLM / unusual-delay /
+
+        video-integrity) and the cheat-detection v2 analysis
+
+        (``integrity_analysis_v2``). ``tab_switch_detection`` is reported
+
+        independently of either version.'
+    FormResult:
+      properties:
+        object:
+          type: string
+          const: form_result
+          title: Object
+          description: Object type identifier.
+          default: form_result
+        interview_id:
+          type: string
+          title: Interview Id
+          description: Interview this result belongs to.
+          examples:
+          - D536A69A4090E13F
+        overall_status:
+          type: string
+          title: Overall Status
+          description: 'Overall form status: ''passed'', ''failed'', ''pending''.'
+          examples:
+          - passed
+        questions:
+          items:
+            $ref: '#/components/schemas/FormQuestionResult'
+          type: array
+          title: Questions
+          description: Individual question results.
+      type: object
+      required:
+      - interview_id
+      - overall_status
+      title: FormResult
+      description: Complete results for the form screening step.
+    CheatTranscriptReference:
+      properties:
+        user_friendly_timestamp:
+          type: string
+          title: User Friendly Timestamp
+          description: Human-readable timestamp (MM:SS).
+          examples:
+          - 02:14
+        text:
+          type: string
+          title: Text
+          description: The transcript text at this point.
+          examples:
+          - As an AI language model, I would approach this by...
+        actual_timestamp:
+          type: number
+          title: Actual Timestamp
+          description: Seconds from the start of the interview.
+          examples:
+          - 134.0
+      type: object
+      required:
+      - user_friendly_timestamp
+      - text
+      - actual_timestamp
+      title: CheatTranscriptReference
+      description: A transcript snippet referenced by a cheating instance.
+    SMSResult:
+      properties:
+        object:
+          type: string
+          const: sms_result
+          title: Object
+          description: Object type identifier.
+          default: sms_result
+        interview_id:
+          type: string
+          title: Interview Id
+          description: Interview this result belongs to.
+          examples:
+          - D536A69A4090E13F
+        is_eligible:
+          type: boolean
+          title: Is Eligible
+          description: Overall eligibility verdict.
+        confidence:
+          type: number
+          title: Confidence
+          description: Overall AI confidence (0.0-1.0).
+          examples:
+          - 0.88
+        criteria:
+          items:
+            $ref: '#/components/schemas/SMSCriterionResult'
+          type: array
+          title: Criteria
+          description: Individual criterion results.
+        transcript:
+          items:
+            $ref: '#/components/schemas/SMSMessage'
+          type: array
+          title: Transcript
+          description: Full SMS conversation.
+        messages_sent:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Messages Sent
+          description: Total messages sent by the agent.
+          examples:
+          - 8
+        messages_received:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Messages Received
+          description: Total messages received from the candidate.
+          examples:
+          - 6
+      type: object
+      required:
+      - interview_id
+      - is_eligible
+      - confidence
+      title: SMSResult
+      description: Complete results for the SMS screening step.
+    ResumeGptDetectionResult:
+      properties:
+        version:
+          type: string
+          title: Version
+          description: Detector version.
+        scanId:
+          type: string
+          title: Scanid
+          description: Scan identifier.
+        documents:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Documents
+          description: Per-document detection results (probabilities, etc.).
+        neatVersion:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Neatversion
+          description: Internal detector sub-version, if available.
+        editorDocumentId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Editordocumentid
+          description: Associated editor document id, if available.
+      type: object
+      required:
+      - version
+      - scanId
+      title: ResumeGptDetectionResult
+      description: AI-generation detection for the candidate's resume.
+    InterviewIntegrityResult:
+      properties:
+        job_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Job Id
+          description: Integrity analysis job identifier.
+        status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+          description: Analysis status.
+          examples:
+          - completed
+        filename:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Filename
+          description: Analyzed video filename.
+        file_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: File Type
+          description: Analyzed file type.
+          examples:
+          - video/mp4
+        created_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Created At
+          description: When the analysis was created.
+        updated_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Updated At
+          description: When the analysis was last updated.
+        result:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Result
+          description: Raw integrity result payload (multiple people, tracking, etc.).
+        error:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error
+          description: Error message, if the analysis failed.
+        comprehensive:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Comprehensive
+          description: Comprehensive integrity breakdown (e.g. cheating timeline).
+        aggregated:
+          anyOf:
+          - $ref: '#/components/schemas/IntegrityAggregated'
+          - type: 'null'
+          description: Aggregated movement events.
+      type: object
+      title: InterviewIntegrityResult
+      description: Video integrity analysis (multiple people, eye/head tracking, phone, etc.).
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: API key for authentication. Pass your key in the X-API-KEY header.
