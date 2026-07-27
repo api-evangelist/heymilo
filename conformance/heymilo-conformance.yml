@@ -1,0 +1,49 @@
+generated: '2026-07-19'
+method: searched
+source:
+- openapi/heymilo-openapi-original.json
+- https://trust.warden-ai.com/heymilo
+- https://docs.heymilo.ai
+standards:
+- id: openapi-3.1
+  conforms: true
+  evidence: openapi/heymilo-openapi-original.json declares openapi 3.1.0
+- id: oauth2.1
+  conforms: true
+  evidence: MCP server publishes RFC 8414 metadata; authorization_code + PKCE S256, refresh_token
+- id: rfc8414-oauth-as-metadata
+  conforms: true
+  evidence: https://mcp.heymilo.ai/.well-known/oauth-authorization-server returns 200
+- id: rfc9728-protected-resource-metadata
+  conforms: true
+  evidence: https://mcp.heymilo.ai/.well-known/oauth-protected-resource returns 200
+- id: mcp
+  conforms: true
+  evidence: hosted Model Context Protocol server at https://mcp.heymilo.ai/mcp
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: errors use a custom { error } envelope, not application/problem+json
+- id: cursor-pagination
+  conforms: true
+  evidence: list endpoints paginate with starting_after + limit
+- id: idempotency
+  conforms: false
+  evidence: no idempotency-key mechanism documented
+compliance_programs:
+- name: Warden AI — AI Assurance / continuous bias auditing
+  url: https://trust.warden-ai.com/heymilo
+  audit_frequency: monthly
+  latest_audit: '2026-07-09'
+  sample_size: 17442
+  regulations:
+  - New York City Local Law 144
+  - EU AI Act (Regulation 2024/1689)
+  - Colorado SB 26-189
+  - California FEHA
+  result: all bias/fairness categories Clear
+  notes: >-
+    Third-party independent AI assurance covering sex, race/ethnicity,
+    intersectional, age, disability, religion, sexual orientation, veteran status,
+    English proficiency, pregnancy, national origin, criminal history, medical
+    condition, gender identity, and marital status bias. Post-market monitoring
+    with transparent public reporting.

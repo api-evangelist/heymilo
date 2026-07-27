@@ -1,22 +1,573 @@
 aid: heymilo
-name: Heymilo
-description: Heymilo is a company surfaced as a portfolio company of canaan-partners and added to the
-  API Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+name: HeyMilo
+description: >-
+  HeyMilo AI is an agentic recruiting platform for high-volume hiring teams —
+  staffing agencies, corporate recruiters, BPOs, franchises, and data-annotation
+  operations. It combines candidate sourcing from your ATS, conversational SMS
+  and smart-form pre-screening, resume analysis, and live AI voice and video
+  interviews (with built-in cheat detection), then scores and ranks candidates
+  with analytics, reporting, and fully white-labeled workflows. The HeyMilo
+  Public API (v2.0.0, base https://api.heymilo.ai) exposes programmatic control
+  over interviewers (postings), candidate ingestion, interview data and
+  transcripts, questions, webhooks, templates, voices, phone numbers, domains,
+  and ATS push/resolve — authenticated with an X-API-KEY header and rate limited
+  to 300 requests per minute. A read-only hosted MCP server at
+  https://mcp.heymilo.ai/mcp lets any MCP client query candidates, jobs, and
+  interviews in natural language. HeyMilo raised $6M to scale agentic recruiting
+  and is backed by Canaan Partners.
 url: https://raw.githubusercontent.com/api-evangelist/heymilo/refs/heads/main/apis.yml
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://www.heymilo.ai/images/og-default.png
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - canaan-partners
-x-tier: stub
-x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
 tags:
 - Company
-apis: []
+- Recruiting
+- Hiring
+- Human Resources
+- HR Tech
+- Artificial Intelligence
+- AI Agents
+- Interviewing
+- Candidate Screening
+- Voice AI
+- Webhooks
+- ATS Integration
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- aid: heymilo:heymilo-ats-api
+  name: HeyMilo ATS API
+  description: The ATS API from HeyMilo — 4 operation(s) for ats.
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - ATS
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-ats-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+- aid: heymilo:heymilo-candidates-api
+  name: HeyMilo Candidates API
+  description: >-
+    Ingest candidates into an interviewer's workflow (sync or async, single or bulk) and list candidates
+    with their progress.
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - Candidates
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-candidates-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+- aid: heymilo:heymilo-design-template-groups-api
+  name: HeyMilo Design Template Groups API
+  description: View grouped design template configurations.
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - Design Template Groups
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-design-template-groups-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+- aid: heymilo:heymilo-design-templates-api
+  name: HeyMilo Design Templates API
+  description: View design templates that control the candidate interview UI.
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - Design Templates
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-design-templates-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+- aid: heymilo:heymilo-domains-api
+  name: HeyMilo Domains API
+  description: Manage custom domains for white-labelled interview URLs.
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - Domains
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-domains-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+- aid: heymilo:heymilo-email-template-groups-api
+  name: HeyMilo Email Template Groups API
+  description: View grouped email template configurations.
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - Email Template Groups
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-email-template-groups-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+- aid: heymilo:heymilo-email-templates-api
+  name: HeyMilo Email Templates API
+  description: View email templates configured for candidate outreach.
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - Email Templates
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-email-templates-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+- aid: heymilo:heymilo-health-api
+  name: HeyMilo Health API
+  description: The Health API from HeyMilo — 1 operation(s) for health.
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - Health
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-health-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+- aid: heymilo:heymilo-interview-templates-api
+  name: HeyMilo Interview Templates API
+  description: >-
+    View interview templates, reusable agent configurations cloned from a blueprint posting (workflow,
+    questions, criteria, agent settings).
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - Interview Templates
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-interview-templates-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+- aid: heymilo:heymilo-interviewers-api
+  name: HeyMilo Interviewers API
+  description: >-
+    Create, read, update, and manage interviewers. An interviewer (posting) combines job details with
+    an AI agent configuration and agentic workflow.
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - Interviewers
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-interviewers-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+- aid: heymilo:heymilo-interviews-api
+  name: HeyMilo Interviews API
+  description: >-
+    Retrieve full interview results (scorecard, transcript, resume evaluation) and manage per-interview
+    metadata.
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - Interviews
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-interviews-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+- aid: heymilo:heymilo-phone-numbers-api
+  name: HeyMilo Phone Numbers API
+  description: List provisioned phone numbers for SMS and voice agents.
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - Phone Numbers
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-phone-numbers-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+- aid: heymilo:heymilo-questions-api
+  name: HeyMilo Questions API
+  description: >-
+    Create, read, update, delete, and reorder questions and criteria for an interviewer's workflow. Covers
+    all modalities: voice, sms, form, resume_eligibility, resume_scoring, and voice_tags.
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - Questions
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-questions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+- aid: heymilo:heymilo-schema-discovery-api
+  name: HeyMilo Schema Discovery API
+  description: The Schema Discovery API from HeyMilo — 2 operation(s) for schema discovery.
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - Schema Discovery
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-schema-discovery-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+- aid: heymilo:heymilo-sender-emails-api
+  name: HeyMilo Sender Emails API
+  description: Manage sender email addresses used for candidate communications.
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - Sender Emails
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-sender-emails-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+- aid: heymilo:heymilo-voices-api
+  name: HeyMilo Voices API
+  description: Browse the workspace voice registry for AI interviewer voices.
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - Voices
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-voices-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+- aid: heymilo:heymilo-webhooks-api
+  name: HeyMilo Webhooks API
+  description: Register, list, and manage webhook endpoints that receive real-time event notifications.
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-webhooks-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+- aid: heymilo:heymilo-workspaces-api
+  name: HeyMilo Workspaces API
+  description: >-
+    List the workspaces accessible to the authenticated caller. API-key callers receive a single entry;
+    OAuth callers receive every workspace they are a member of.
+  humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
+  baseURL: https://api.heymilo.ai
+  tags:
+  - Workspaces
+  properties:
+  - type: OpenAPI
+    url: openapi/heymilo-workspaces-api-openapi.yml
+  - type: Documentation
+    url: https://docs.heymilo.ai/api-reference/public-api/documentation
+  - type: APIReference
+    url: https://docs.heymilo.ai/api-reference
+  - type: Authentication
+    url: authentication/heymilo-authentication.yml
+  - type: Webhooks
+    url: asyncapi/heymilo-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/heymilo-problem-types.yml
+  - type: Conventions
+    url: conventions/heymilo-conventions.yml
+  - type: DataModel
+    url: data-model/heymilo-data-model.yml
+common:
+- type: AgenticAccess
+  url: agentic-access/heymilo-agentic-access.yml
+- type: DomainSecurity
+  url: security/heymilo-domain-security.yml
+- type: DeveloperPortal
+  url: https://docs.heymilo.ai
+- type: Documentation
+  url: https://docs.heymilo.ai/documentation/get-started/landing
+- type: APIReference
+  url: https://docs.heymilo.ai/api-reference
+- type: GettingStarted
+  url: https://docs.heymilo.ai/documentation/get-started/what-is-heymilo
+- type: Website
+  url: https://www.heymilo.ai
+- type: SignUp
+  url: https://www.heymilo.ai/book-a-demo
+- type: Blog
+  url: https://www.heymilo.ai/blog
+- type: Support
+  url: https://docs.heymilo.ai
+- type: GitHubOrganization
+  url: https://github.com/heymilo
+- type: TermsOfService
+  url: https://www.heymilo.ai/terms-of-service
+- type: PrivacyPolicy
+  url: https://www.heymilo.ai/privacy-policy
+- type: StatusPage
+  url: https://status.heymilo.ai
+- type: TrustCenter
+  url: https://trust.heymilo.ai
+- type: Compliance
+  url: https://trust.warden-ai.com/heymilo
+- type: LinkedIn
+  url: https://www.linkedin.com/company/heymilo/
+- type: Integrations
+  url: https://www.heymilo.ai/integrations
+- type: MCPServer
+  url: mcp/heymilo-mcp.yml
+- type: LLMsTxt
+  url: llms/heymilo-llms.txt
+- type: WellKnown
+  url: well-known/heymilo-well-known.yml
+- type: Authentication
+  url: authentication/heymilo-authentication.yml
+- type: Conventions
+  url: conventions/heymilo-conventions.yml
+- type: RateLimits
+  url: rate-limits/heymilo-rate-limits.yml
+- type: ErrorCatalog
+  url: errors/heymilo-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/heymilo-lifecycle.yml
+- type: Conformance
+  url: conformance/heymilo-conformance.yml
+- type: Webhooks
+  url: asyncapi/heymilo-webhooks.yml
+- type: AsyncAPI
+  url: asyncapi/heymilo-webhooks.yml
+- type: DataModel
+  url: data-model/heymilo-data-model.yml
+- type: Components
+  url: components/heymilo-components.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Overlay
+  url: overlays/heymilo-openapi-overlay.yaml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence

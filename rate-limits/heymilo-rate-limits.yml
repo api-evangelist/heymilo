@@ -1,0 +1,18 @@
+generated: '2026-07-19'
+method: searched
+source: https://docs.heymilo.ai/api-reference/public-api/documentation
+scope: per-api-key
+limits:
+- name: default
+  limit_count: 300
+  window: 1m
+  unit: requests
+  per: api-key
+  description: Default rate limit of 300 requests per minute per API key.
+signaling:
+  headers_present: true
+  notes: >-
+    Rate-limit headers are included in responses to help track usage. Exceeding
+    the limit returns HTTP 429 Too Many Requests with the standard APIErrorResponse
+    envelope.
+exceed_status: 429

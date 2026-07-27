@@ -1,0 +1,32 @@
+generated: '2026-07-19'
+method: searched
+probe: true
+trust_centers:
+- url: https://trust.warden-ai.com/heymilo
+  provider: Warden AI
+  type: AI assurance / bias-audit dashboard
+  verified: true
+  audit_frequency: monthly
+  latest_audit: '2026-07-09'
+  sample_size: 17442
+  regulations:
+  - New York City Local Law 144
+  - EU AI Act (Regulation 2024/1689)
+  - Colorado SB 26-189
+  - California FEHA
+  certifications: []
+  notes: >-
+    Third-party continuous bias & fairness auditing of HeyMilo's AI candidate
+    screening with public transparent reporting (all categories Clear at latest
+    audit).
+- url: https://trust.heymilo.ai
+  provider: HeyMilo trust portal
+  type: security/compliance trust center
+  verified: false
+  notes: >-
+    trust.heymilo.ai resolves and serves a trust portal but consistently returned
+    HTTP 429 (bot challenge) during probing, so its listed certifications could
+    not be confirmed. Linked from the heymilo.ai footer.
+evidence:
+- source: https://trust.warden-ai.com/heymilo
+  keywords: [bias audit, NYC Local Law 144, EU AI Act, Colorado SB 26-189, California FEHA]

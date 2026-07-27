@@ -1,0 +1,102 @@
+generated: '2026-07-19'
+method: searched
+status: published
+source: https://docs.heymilo.ai/api-reference/mcp/getting-started
+server:
+  name: heymilo
+  transport: http
+  url: https://mcp.heymilo.ai/mcp
+  read_only: true
+  description: >-
+    HeyMilo hosts a read-only Model Context Protocol server that exposes the same
+    data surfaces an authenticated user sees in app.heymilo.ai, scoped to the
+    workspaces the identity can access. Every tool is generated from the Public
+    API v2 GET endpoints, plus a custom listWorkspaces tool. Writes are not
+    available as tools — call the REST API directly.
+auth:
+  methods:
+  - type: oauth2.1
+    flow: authorization_code
+    pkce: S256
+    scopes: [openid, profile, email, offline_access]
+    discovery: https://mcp.heymilo.ai/.well-known/oauth-authorization-server
+    protected_resource: https://mcp.heymilo.ai/.well-known/oauth-protected-resource
+    bearer: Authorization
+  - type: api_key
+    bearer: Authorization
+    notes: HeyMilo API key passed as Authorization Bearer <key>.
+prompts:
+- name: milo_capabilities
+  description: >-
+    Structured description of every write endpoint (with curl examples) so an
+    LLM can guide users through creating postings, ingesting candidates, and
+    modifying workflows against the REST API.
+resources:
+- uri: milo://capabilities
+  description: Machine-readable capabilities resource mirroring the milo_capabilities prompt.
+tools:
+- name: listWorkspaces
+  description: List every HeyMilo workspace the authenticated identity can operate on.
+  source_operation: openapi/heymilo-openapi-original.json#listWorkspaces
+- name: listPostings
+  source_operation: openapi/heymilo-openapi-original.json#listPostings
+- name: getPosting
+  source_operation: openapi/heymilo-openapi-original.json#getPosting
+- name: getPostingStats
+  source_operation: openapi/heymilo-openapi-original.json#getPostingStats
+- name: listCandidates
+  source_operation: openapi/heymilo-openapi-original.json#listCandidates
+- name: getInterviewData
+  source_operation: openapi/heymilo-openapi-original.json#getInterviewData
+- name: getInterviewMetadata
+  source_operation: openapi/heymilo-openapi-original.json#getInterviewMetadata
+- name: listInterviewTemplates
+  source_operation: openapi/heymilo-openapi-original.json#listInterviewTemplates
+- name: getInterviewTemplate
+  source_operation: openapi/heymilo-openapi-original.json#getInterviewTemplate
+- name: listQuestions
+  source_operation: openapi/heymilo-openapi-original.json#listQuestions
+- name: getQuestion
+  source_operation: openapi/heymilo-openapi-original.json#getQuestion
+- name: listVoices
+  source_operation: openapi/heymilo-openapi-original.json#listVoices
+- name: getVoice
+  source_operation: openapi/heymilo-openapi-original.json#getVoice
+- name: getVoicePreview
+  source_operation: openapi/heymilo-openapi-original.json#getVoicePreview
+- name: listSenderEmails
+  source_operation: openapi/heymilo-openapi-original.json#listSenderEmails
+- name: getSenderEmail
+  source_operation: openapi/heymilo-openapi-original.json#getSenderEmail
+- name: listEmailTemplates
+  source_operation: openapi/heymilo-openapi-original.json#listEmailTemplates
+- name: getEmailTemplate
+  source_operation: openapi/heymilo-openapi-original.json#getEmailTemplate
+- name: listEmailTemplateGroups
+  source_operation: openapi/heymilo-openapi-original.json#listEmailTemplateGroups
+- name: getEmailTemplateGroup
+  source_operation: openapi/heymilo-openapi-original.json#getEmailTemplateGroup
+- name: listDesignTemplates
+  source_operation: openapi/heymilo-openapi-original.json#listDesignTemplates
+- name: getDesignTemplate
+  source_operation: openapi/heymilo-openapi-original.json#getDesignTemplate
+- name: listDesignTemplateGroups
+  source_operation: openapi/heymilo-openapi-original.json#listDesignTemplateGroups
+- name: getDesignTemplateGroup
+  source_operation: openapi/heymilo-openapi-original.json#getDesignTemplateGroup
+- name: listPhoneNumbers
+  source_operation: openapi/heymilo-openapi-original.json#listPhoneNumbers
+- name: getPhoneNumber
+  source_operation: openapi/heymilo-openapi-original.json#getPhoneNumber
+- name: listDomains
+  source_operation: openapi/heymilo-openapi-original.json#listDomains
+- name: getDomain
+  source_operation: openapi/heymilo-openapi-original.json#getDomain
+- name: listWebhooks
+  source_operation: openapi/heymilo-openapi-original.json#listWebhooks
+- name: getWebhook
+  source_operation: openapi/heymilo-openapi-original.json#getWebhook
+- name: list_agent_types
+  source_operation: openapi/heymilo-openapi-original.json#list_agent_types_api_v2_schemas_agents_get
+- name: list_question_types
+  source_operation: openapi/heymilo-openapi-original.json#list_question_types_api_v2_schemas_question_types_get

@@ -1,0 +1,16 @@
+generated: '2026-07-19'
+method: generated
+source: openapi/heymilo-openapi-original.json
+skills:
+- file: heymilo-create-interviewer-and-ingest.md
+  name: Create an interviewer and ingest candidates
+  api: openapi/heymilo-openapi-original.json
+  operations: [createPosting, createQuestion, listQuestions, activatePosting, ingestCandidate, ingestCandidatesBulk, ingestCandidateAsync]
+- file: heymilo-review-pipeline.md
+  name: Review a candidate pipeline and pull interview results
+  api: openapi/heymilo-openapi-original.json
+  operations: [listPostings, getPostingStats, listCandidates, getInterviewData, getInterviewMetadata]
+- file: heymilo-webhooks-and-ats-sync.md
+  name: Subscribe to interview events and sync candidates to the ATS
+  api: openapi/heymilo-openapi-original.json
+  operations: [createWebhook, listWebhooks, resolveAtsCandidate, pushAtsCandidate, getAtsPushStatus, listAtsConnections]

@@ -1,0 +1,32 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for HeyMilo Public API
+  version: 1.0.0
+x-provenance:
+  generated: '2026-07-19'
+  method: generated
+  source: openapi/heymilo-openapi-original.json
+extends: openapi/heymilo-openapi-original.json
+actions:
+- target: $.info
+  update:
+    x-apievangelist-enriched: true
+    x-api-evangelist-network: https://apis.io/provider/heymilo
+    x-auth-model: apiKey (X-API-KEY header); 300 req/min per key
+    x-pagination: cursor (starting_after + limit)
+    x-error-envelope: '{ "error": { "type", "code", "message", "details"? } }'
+    x-mcp-server: https://mcp.heymilo.ai/mcp
+- target: $.servers
+  update:
+  - url: https://api.heymilo.ai
+    description: Production
+- target: $.info
+  update:
+    x-artifacts:
+      authentication: authentication/heymilo-authentication.yml
+      conventions: conventions/heymilo-conventions.yml
+      errors: errors/heymilo-problem-types.yml
+      lifecycle: lifecycle/heymilo-lifecycle.yml
+      webhooks: asyncapi/heymilo-webhooks.yml
+      data_model: data-model/heymilo-data-model.yml
+      mcp: mcp/heymilo-mcp.yml

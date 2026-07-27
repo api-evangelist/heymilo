@@ -1,0 +1,102 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/heymilo-openapi-original.json
+entities:
+- name: Workspace
+  description: Top-level tenant; an API key maps to one workspace.
+- name: Posting
+  aka: Interviewer
+  description: A job posting with an agentic interview workflow.
+  id_prefix: posting_ (example)
+- name: Candidate
+  description: A person ingested into a posting's workflow.
+  id_prefix: candidate_ (example)
+- name: Interview
+  description: A candidate's run through the workflow; holds transcript, scorecard, metadata.
+  id_prefix: interview_ (example)
+- name: Question
+  description: A question/criterion on a posting, by modality (voice, sms, form, resume).
+- name: Webhook
+  description: Event subscription bound to a posting.
+  id_prefix: webhook_ (example)
+- name: InterviewTemplate
+  description: Reusable interviewer configuration cloned from a blueprint posting.
+- name: EmailTemplate
+- name: EmailTemplateGroup
+- name: DesignTemplate
+- name: DesignTemplateGroup
+- name: Domain
+  description: Custom (white-label) domain configuration.
+- name: SenderEmail
+- name: PhoneNumber
+- name: Voice
+- name: AtsConnection
+  description: A connected ATS integration (Bullhorn, Avionté).
+relationships:
+- from: Workspace
+  to: Posting
+  type: has_many
+- from: Posting
+  to: Candidate
+  type: has_many
+  via: posting_id
+- from: Posting
+  to: Question
+  type: has_many
+  via: posting_id
+- from: Posting
+  to: Webhook
+  type: has_many
+  via: posting_id
+- from: Posting
+  to: PhoneNumber
+  type: has_one
+  via: phone_number_id
+- from: Posting
+  to: SenderEmail
+  type: has_one
+  via: sender_email_id
+- from: Posting
+  to: EmailTemplateGroup
+  type: has_one
+  via: email_template_group_id
+- from: Posting
+  to: DesignTemplateGroup
+  type: has_one
+  via: design_template_group_id
+- from: Posting
+  to: InterviewTemplate
+  type: belongs_to
+  via: interview_template_id
+- from: Candidate
+  to: Interview
+  type: has_one
+  via: interview_id
+- from: Candidate
+  to: Posting
+  type: belongs_to
+  via: posting_id
+- from: Interview
+  to: Candidate
+  type: belongs_to
+  via: candidate_id
+- from: Webhook
+  to: Posting
+  type: belongs_to
+  via: posting_id
+- from: SenderEmail
+  to: Domain
+  type: belongs_to
+  via: domain_id
+- from: EmailTemplateGroup
+  to: SenderEmail
+  type: has_one
+  via: sender_email_id
+- from: WebInterviewConfig
+  to: Voice
+  type: has_one
+  via: voice_id
+- from: PushCandidate
+  to: AtsConnection
+  type: uses
+  via: ats_candidate_id

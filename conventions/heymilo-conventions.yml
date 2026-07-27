@@ -1,0 +1,57 @@
+generated: '2026-07-19'
+method: searched
+source:
+- openapi/heymilo-openapi-original.json
+- https://docs.heymilo.ai/api-reference/public-api/documentation
+authentication:
+  style: api-key
+  header: X-API-KEY
+  scope: one key per workspace, no expiry
+  see: authentication/heymilo-authentication.yml
+workspace_scoping:
+  header: X-Workspace-Id
+  notes: >-
+    API-key callers are scoped to a single workspace. OAuth (MCP) callers may
+    pass X-Workspace-Id to target a specific workspace among those they belong to;
+    call listWorkspaces to enumerate accessible workspaces.
+idempotency:
+  supported: false
+  notes: >-
+    HeyMilo publishes no idempotency-key mechanism. Write endpoints that must not
+    duplicate (candidate ingestion) are also available as async variants that
+    return a tracking id. resolveAtsCandidate lets callers dedupe against the ATS
+    before pushing.
+pagination:
+  style: cursor
+  params:
+    limit: Number of results per page.
+    starting_after: Cursor; return results after this id.
+  filters:
+    created_after: Unix/ISO lower bound on creation time.
+    created_before: Unix/ISO upper bound on creation time.
+    search: Free-text filter (where supported).
+    modality: Filter questions by modality (voice, sms, form, resume_eligibility, resume_scoring, voice_tags).
+  response_fields:
+    envelope: ListResponse wrapper with the item array plus pagination metadata.
+async:
+  pattern: >-
+    Candidate ingestion offers sync (ingestCandidate, ingestCandidatesBulk) and
+    async (ingestCandidateAsync, ingestCandidatesBulkAsync) variants; async
+    returns an ingestion id to track the job. ATS pushes are queued and polled
+    via getAtsPushStatus using the returned item_id.
+error_envelope:
+  shape: '{ "error": { "type", "code", "message", "details"? } }'
+  validation_shape: '{ "detail": [ { "loc", "msg", "type" } ] }'
+  see: errors/heymilo-problem-types.yml
+rate_limiting:
+  default: 300 requests per minute per API key
+  exceed_status: 429
+  headers_present: true
+  see: rate-limits/heymilo-rate-limits.yml
+versioning:
+  scheme: uri-path
+  current: v2
+  see: lifecycle/heymilo-lifecycle.yml
+webhooks:
+  events: [interview_started, interview_completed, report_available]
+  see: asyncapi/heymilo-webhooks.yml

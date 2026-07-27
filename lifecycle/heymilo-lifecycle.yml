@@ -1,0 +1,26 @@
+generated: '2026-07-19'
+method: searched
+source:
+- https://api.heymilo.ai/openapi.json
+- https://status.heymilo.ai
+- https://docs.heymilo.ai/api-reference/public-api/documentation
+versioning:
+  scheme: uri-path
+  current: v2
+  spec_version: 2.0.0
+  base_path: /api/v2
+  notes: >-
+    The current Public API is v2, mounted under /api/v2 on https://api.heymilo.ai.
+    An earlier surface documented under the legacy host https://api.heymilo.network
+    (/api/postings, page/limit pagination) predates v2; v2 uses cursor pagination
+    (starting_after + limit).
+deprecation:
+  policy_url: null
+  sunset_header: false
+  notes: No published deprecation policy or RFC 8594 Sunset/Deprecation header support found.
+sla:
+  url: null
+  uptime_target: null
+status_page: https://status.heymilo.ai
+status_page_provider: statuspage.io (Atlassian Statuspage)
+deprecated_operations: []

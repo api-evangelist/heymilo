@@ -1,0 +1,43 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/heymilo-openapi-original.json
+docs: https://docs.heymilo.ai/api-reference/public-api/documentation
+format: custom-json
+envelope:
+  description: >-
+    Most error responses use a custom JSON envelope with a single `error` object
+    (APIErrorResponse). 422 validation errors use the FastAPI HTTPValidationError
+    shape with a `detail[]` array. HeyMilo does not use RFC 9457
+    application/problem+json.
+  error_object:
+    type: string        # error category, e.g. invalid_request_error
+    code: string        # machine-readable code, e.g. validation_error
+    message: string     # human-readable summary
+    details: array?     # optional APIErrorDetail[] with code/message/param
+  validation_error_object:
+    detail: array       # ValidationError[] with loc[], msg, type
+problems:
+- status: 400
+  title: Bad Request
+  schema: APIErrorResponse
+  meaning: Malformed request or invalid parameters.
+- status: 401
+  title: Unauthorized
+  schema: APIErrorResponse
+  meaning: Missing or invalid X-API-KEY.
+- status: 404
+  title: Not Found
+  schema: APIErrorResponse
+  meaning: Referenced resource (posting, interview, question, webhook, template, etc.) does not exist.
+- status: 422
+  title: Validation Error
+  schema: HTTPValidationError
+  content_type: application/json
+  meaning: Request body or query parameters failed validation; `detail[]` lists each failure with its location.
+- status: 429
+  title: Too Many Requests
+  schema: APIErrorResponse
+  meaning: Rate limit exceeded (default 300 requests per minute per API key).
+- status: 500
+  title: Internal Server Error
+  meaning: Documented in the narrative reference as a possible response code; no schema in the OpenAPI.

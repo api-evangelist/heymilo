@@ -1,0 +1,37 @@
+generated: '2026-07-19'
+method: searched
+source:
+- https://docs.heymilo.ai
+- openapi/heymilo-openapi-original.json
+note: >-
+  HeyMilo does not ship a client-side JS element/web-component library. Its
+  embeddable surface is HOSTED and PREBUILT: white-labeled candidate-facing
+  interview experiences reachable by shareable link, over custom domains, styled
+  by design templates. These are configured through the API rather than embedded
+  as widgets.
+families:
+- name: Hosted Interview Experience
+  kind: hosted-prebuilt-surface
+  description: >-
+    Candidate-facing interview pages (voice, video, SMS, smart form) delivered at
+    a shareable interview URL. Web/video interviews render a configurable backdrop
+    and avatar image and can show a live transcript.
+  configured_by:
+  - listInterviewTemplates
+  - getInterviewTemplate
+- name: White Labeling
+  kind: branding
+  description: Fully branded workflows from first touch to final screen.
+  configured_by:
+  - listDomains
+  - getDomain
+  - listDesignTemplates
+  - getDesignTemplate
+  - listDesignTemplateGroups
+  - getDesignTemplateGroup
+- name: Custom Domains
+  kind: hosting
+  description: Serve candidate experiences from a customer-owned domain.
+  configured_by:
+  - listDomains
+  - getDomain

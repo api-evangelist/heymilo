@@ -1,0 +1,31 @@
+generated: '2026-07-19'
+method: searched
+hosts:
+- host: https://mcp.heymilo.ai
+  documents:
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: heymilo-oauth-authorization-server.json
+    standard: RFC 8414
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: heymilo-oauth-protected-resource.json
+    standard: RFC 9728
+- host: https://api.heymilo.ai
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+- host: https://www.heymilo.ai
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+notes: >-
+  The hosted MCP server publishes RFC 8414 authorization-server metadata and
+  RFC 9728 protected-resource metadata, driving automatic OAuth discovery for
+  MCP clients. The REST API host publishes no /.well-known/ discovery documents.
