@@ -1,0 +1,95 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HeyMilo Public ATS Sender Emails API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-API-KEY",
+      "value": "{{X-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Sender Emails",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List sender emails",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.heymilo.ai/api/v2/sender-emails",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "starting_after",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns all sender email addresses configured for the workspace."
+        },
+        {
+          "info": {
+            "name": "Get a sender email",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.heymilo.ai/api/v2/sender-emails/:sender_email_id",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "sender_email_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Returns a single sender email address by ID."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

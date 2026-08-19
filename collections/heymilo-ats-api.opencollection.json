@@ -1,0 +1,141 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HeyMilo Public ATS API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-API-KEY",
+      "value": "{{X-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "ATS",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Resolve a candidate in the ATS",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.heymilo.ai/api/v2/ats/candidates/resolve",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Search the connected ATS for a candidate by email or ATS candidate ID. Returns matching candidates so the caller can decide whether to push an existing record or create a new one. Only Bullhorn and Avionte are currently supported."
+        },
+        {
+          "info": {
+            "name": "Push a candidate to the ATS",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.heymilo.ai/api/v2/ats/candidates/push",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Enqueue a candidate push to the connected ATS. If ``candidate.ats_candidate_id`` is null, a new candidate record is created in the ATS. Returns a queue ``item_id`` that can be polled via the push-status endpoint. Only Bullhorn and Avionte are currently supported."
+        },
+        {
+          "info": {
+            "name": "Get push status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.heymilo.ai/api/v2/ats/candidates/push/:item_id",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "item_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Poll the status of a queued candidate push by item ID."
+        },
+        {
+          "info": {
+            "name": "List ATS connections",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.heymilo.ai/api/v2/ats/connections",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Return all ATS integrations configured for the authenticated workspace."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

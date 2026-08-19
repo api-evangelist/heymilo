@@ -1,0 +1,51 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HeyMilo Public ATS Workspaces API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-API-KEY",
+      "value": "{{X-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Workspaces",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List workspaces accessible to the caller",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.heymilo.ai/api/v2/workspaces",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Return every HeyMilo workspace the authenticated caller can operate on. API-key callers always receive a single entry; OAuth callers receive every workspace they are a member of and may pass `X-Workspace-Id: <id>` on subsequent calls to scope operations to a specific workspace."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

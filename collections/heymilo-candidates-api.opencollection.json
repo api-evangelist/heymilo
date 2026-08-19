@@ -1,0 +1,226 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HeyMilo Public ATS Candidates API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-API-KEY",
+      "value": "{{X-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Candidates",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List candidates for an interviewer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.heymilo.ai/api/v2/postings/:posting_id/candidates",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "posting_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of candidates to return (1–100)."
+              },
+              {
+                "name": "starting_after",
+                "value": "",
+                "type": "query",
+                "description": "Cursor for pagination. Pass the `interview_id` of the last candidate from the previous page."
+              },
+              {
+                "name": "created_after",
+                "value": "",
+                "type": "query",
+                "description": "Only return candidates invited to this interviewer at or after this bound (inclusive). Accepts an ISO-8601 datetime such as `2026-03-13T00:00:00Z` or `2026-03-13T00:00:00+00:00`, or Unix epoch seconds matching the `created_at` field in the response. Naive ISO values (no offset) are interpreted as UTC. Combine with `created_before` to query a closed interval."
+              },
+              {
+                "name": "created_before",
+                "value": "",
+                "type": "query",
+                "description": "Only return candidates invited to this interviewer at or before this bound (inclusive). Accepts an ISO-8601 datetime such as `2026-03-14T23:59:59Z`, or Unix epoch seconds matching the `created_at` field in the response. Naive ISO values (no offset) are interpreted as UTC."
+              }
+            ]
+          },
+          "docs": "Retrieve a paginated list of candidates for a specific interviewer. Each candidate includes workflow progress, scores, and agent summaries."
+        },
+        {
+          "info": {
+            "name": "Ingest a single candidate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.heymilo.ai/api/v2/postings/:posting_id/candidates",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "posting_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submit a candidate for processing through the interviewer's workflow. Returns the interview ID, interview URL, and full candidate receipt."
+        },
+        {
+          "info": {
+            "name": "Bulk ingest candidates",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.heymilo.ai/api/v2/postings/:posting_id/candidates/bulk",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "posting_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submit multiple candidates at once for processing through the interviewer's workflow. Returns an interview ID and URL for each candidate."
+        },
+        {
+          "info": {
+            "name": "Async ingest a single candidate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.heymilo.ai/api/v2/postings/:posting_id/candidates/async",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "posting_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Queue a candidate for async processing through the interviewer's workflow. Returns an ingestion ID to track the job."
+        },
+        {
+          "info": {
+            "name": "Async bulk ingest candidates",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.heymilo.ai/api/v2/postings/:posting_id/candidates/bulk/async",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "posting_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Queue multiple candidates for async processing through the interviewer's workflow. Returns an ingestion ID to track the job."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

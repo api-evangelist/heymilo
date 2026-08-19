@@ -1,0 +1,101 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HeyMilo Public ATS Email Template Groups API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-API-KEY",
+      "value": "{{X-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Email Template Groups",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List email template groups",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.heymilo.ai/api/v2/email-template-groups",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "starting_after",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Case-insensitive substring filter applied to the group name."
+              }
+            ]
+          },
+          "docs": "Returns all email template groups for the workspace."
+        },
+        {
+          "info": {
+            "name": "Get an email template group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.heymilo.ai/api/v2/email-template-groups/:group_id",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Returns a single email template group by ID."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -7,18 +7,20 @@ server:
   transport: http
   url: https://mcp.heymilo.ai/mcp
   read_only: true
-  description: >-
-    HeyMilo hosts a read-only Model Context Protocol server that exposes the same
-    data surfaces an authenticated user sees in app.heymilo.ai, scoped to the
-    workspaces the identity can access. Every tool is generated from the Public
-    API v2 GET endpoints, plus a custom listWorkspaces tool. Writes are not
-    available as tools — call the REST API directly.
+  description: HeyMilo hosts a read-only Model Context Protocol server that exposes the same data surfaces
+    an authenticated user sees in app.heymilo.ai, scoped to the workspaces the identity can access. Every
+    tool is generated from the Public API v2 GET endpoints, plus a custom listWorkspaces tool. Writes
+    are not available as tools — call the REST API directly.
 auth:
   methods:
   - type: oauth2.1
     flow: authorization_code
     pkce: S256
-    scopes: [openid, profile, email, offline_access]
+    scopes:
+    - openid
+    - profile
+    - email
+    - offline_access
     discovery: https://mcp.heymilo.ai/.well-known/oauth-authorization-server
     protected_resource: https://mcp.heymilo.ai/.well-known/oauth-protected-resource
     bearer: Authorization
@@ -27,10 +29,8 @@ auth:
     notes: HeyMilo API key passed as Authorization Bearer <key>.
 prompts:
 - name: milo_capabilities
-  description: >-
-    Structured description of every write endpoint (with curl examples) so an
-    LLM can guide users through creating postings, ingesting candidates, and
-    modifying workflows against the REST API.
+  description: Structured description of every write endpoint (with curl examples) so an LLM can guide
+    users through creating postings, ingesting candidates, and modifying workflows against the REST API.
 resources:
 - uri: milo://capabilities
   description: Machine-readable capabilities resource mirroring the milo_capabilities prompt.
@@ -100,3 +100,10 @@ tools:
   source_operation: openapi/heymilo-openapi-original.json#list_agent_types_api_v2_schemas_agents_get
 - name: list_question_types
   source_operation: openapi/heymilo-openapi-original.json#list_question_types_api_v2_schemas_question_types_get
+deployment:
+  mode: remote
+  endpoint: https://mcp.heymilo.ai/mcp
+  verified: probed
+  probe: gated
+  checked: '2026-08-12'
+  source: catalog MCP census

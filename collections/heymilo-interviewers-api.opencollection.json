@@ -1,0 +1,378 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HeyMilo Public ATS Interviewers API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-API-KEY",
+      "value": "{{X-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Interviewers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List interviewers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.heymilo.ai/api/v2/postings",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "starting_after",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Case-insensitive substring filter on the posting title."
+              }
+            ]
+          },
+          "docs": "Retrieve a paginated list of interviewers for the authenticated workspace."
+        },
+        {
+          "info": {
+            "name": "Create an interviewer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.heymilo.ai/api/v2/postings",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a fully-configured interviewer with an agentic workflow. Returns the new posting ID, URLs, and a full posting receipt.\n\n**ATS-derived templates use a two-step flow.** When `interview_template_id` references a template whose blueprint is ATS-derived, the new posting is returned in an intermediate stage (`status: \"draft\"`, `ats_metadata.pending_activation: true`) and does **not** begin ingesting candidates. Transition it to live by calling `POST /postings/{posting_id}/activate`, which final"
+        },
+        {
+          "info": {
+            "name": "List interviewer summaries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.heymilo.ai/api/v2/postings/list",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "starting_after",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Case-insensitive substring filter on the posting title."
+              }
+            ]
+          },
+          "docs": "Retrieve a lightweight paginated list of interviewers (id, title, name only) for the authenticated workspace."
+        },
+        {
+          "info": {
+            "name": "Get an interviewer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.heymilo.ai/api/v2/postings/:posting_id",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "posting_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve the full details of a specific interviewer by ID."
+        },
+        {
+          "info": {
+            "name": "Update an interviewer",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.heymilo.ai/api/v2/postings/:posting_id",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "posting_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update fields on an existing interviewer. Only provided fields are modified; omitted fields remain unchanged."
+        },
+        {
+          "info": {
+            "name": "Get interviewer stats",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.heymilo.ai/api/v2/postings/:posting_id/stats",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "posting_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve aggregate statistics for an interviewer in a single call: total candidate count, completed interview count, and average interview and resume scores.\n\nThe two score fields are independent per-agent averages and are `null` when that agent is not part of the interviewer's workflow, or when no candidate has been scored yet."
+        },
+        {
+          "info": {
+            "name": "Update a workflow step's config",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.heymilo.ai/api/v2/postings/:posting_id/workflow/:step_id",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "posting_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "step_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Partially update one workflow step's config without touching other steps or posting-level fields. ``step_id`` is the step's ``type`` or its 1-based ``order``."
+        },
+        {
+          "info": {
+            "name": "Archive an interviewer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.heymilo.ai/api/v2/postings/:posting_id/archive",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "posting_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Archive an interviewer. Archived interviewers stop accepting new candidates."
+        },
+        {
+          "info": {
+            "name": "Activate an interviewer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.heymilo.ai/api/v2/postings/:posting_id/activate",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "posting_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Activate an interviewer so it begins accepting candidates. The interviewer must have a valid workflow configuration.\n\nFor ATS-derived postings still in the `pending_activation` intermediate stage (created via `createPosting` with an ATS-derived `interview_template_id`, or `clonePosting` of an ATS-derived posting), this call finalizes the posting **and** attaches the ATS mapping so candidate ingestion from the ATS begins. The two steps run in one call; the ATS attach is idempotent and best-effort"
+        },
+        {
+          "info": {
+            "name": "Clone an interviewer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.heymilo.ai/api/v2/postings/:posting_id/clone",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "X-Workspace-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "posting_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Create a copy of an existing interviewer with its workflow configuration.\n\nIf the source interviewer is ATS-derived, the clone is returned in the same intermediate stage as a fresh ATS create (`status: \"draft\"`, `ats_metadata.pending_activation: true`) and must be transitioned to live via `POST /postings/{posting_id}/activate`. Cloning a non-ATS posting is unchanged."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
