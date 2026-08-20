@@ -47,6 +47,19 @@ tags:
 - Interviewing
 - Candidate Screening
 - Voice AI
+- Webhook
+- ATS Integration
+tags_raw:
+- Company
+- Recruiting
+- Hiring
+- Human Resources
+- HR Tech
+- Artificial Intelligence
+- AI Agents
+- Interviewing
+- Candidate Screening
+- Voice AI
 - Webhooks
 - ATS Integration
 maintainers:
@@ -455,6 +468,8 @@ apis:
   humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
   baseURL: https://api.heymilo.ai
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
