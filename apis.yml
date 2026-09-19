@@ -55,7 +55,6 @@ tags:
 - Recruiting
 - Hiring
 - Human Resources
-- HR Tech
 - Artificial Intelligence
 - AI Agents
 - Interviewing
@@ -458,6 +457,8 @@ apis:
   humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
   baseURL: https://api.heymilo.ai
   tags:
+  - Voice
+  tags_raw:
   - Voices
   properties:
   - type: OpenAPI
@@ -510,6 +511,8 @@ apis:
   humanURL: https://docs.heymilo.ai/api-reference/public-api/documentation
   baseURL: https://api.heymilo.ai
   tags:
+  - Workspace
+  tags_raw:
   - Workspaces
   properties:
   - type: OpenAPI
