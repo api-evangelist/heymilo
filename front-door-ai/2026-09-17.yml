@@ -1,0 +1,32 @@
+# Front Door AI Index — heymilo — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: heymilo
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: www.heymilo.ai
+  final_host: www.heymilo.ai
+  ownership: own
+  owner: heymilo
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 36
+  host_score: 36
+  density: 16.15
+  words: 2229
+  tiers:
+    agentic: 7
+    core: 29
+    model: 0
+  ambiguous: 6
+  top_terms:
+    AI: 28
+    MCP: 4
+    agent: 4
+    agentic: 2
+    A.I.: 1
+    conversational AI: 1
+    intelligence: 1
+    smart: 1

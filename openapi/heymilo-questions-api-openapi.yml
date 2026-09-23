@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: HeyMilo Public ATS Questions API
+  title: HeyMilo Public Questions API
   description: External developer-facing API for HeyMilo. Create interviewers with agentic workflows, ingest candidates, retrieve interview results, and manage workspace resources.
   version: 2.0.0
 servers:
@@ -495,33 +495,367 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    APIErrorDetail:
+    APIErrorResponse:
       properties:
+        error:
+          $ref: '#/components/schemas/APIError'
+      type: object
+      required:
+      - error
+      title: APIErrorResponse
+    CreateQuestionRequest:
+      properties:
+        modality:
+          type: string
+          enum:
+          - voice
+          - sms
+          - form
+          - resume_eligibility
+          - resume_scoring
+          - voice_tags
+          title: Modality
+          description: 'Question modality: voice, sms, form, resume_eligibility, resume_scoring, voice_tags.'
+          examples:
+          - voice
+        text:
+          type: string
+          title: Text
+          description: The question text, criterion text, or tag name.
+          examples:
+          - Tell me about a challenging project you led.
+        evaluation_criteria:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Evaluation Criteria
+          description: Evaluation criteria.
+        score_of_1:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Score Of 1
+          description: Score-1 description.
+        score_of_5:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Score Of 5
+          description: Score-5 description.
+        score_weight:
+          anyOf:
+          - type: integer
+            maximum: 10.0
+            minimum: 1.0
+          - type: 'null'
+          title: Score Weight
+          description: Importance weight for scoring (1–10).
+        not_scored:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Not Scored
+          description: Ask but don't score.
+        question_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Question Type
+          description: Question format.
+        min_follow_ups:
+          anyOf:
+          - type: integer
+            minimum: 0.0
+          - type: 'null'
+          title: Min Follow Ups
+          description: Min follow-ups.
+        max_follow_ups:
+          anyOf:
+          - type: integer
+            minimum: 0.0
+          - type: 'null'
+          title: Max Follow Ups
+          description: Max follow-ups.
+        additional_instructions:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Additional Instructions
+          description: Per-question instructions.
+        post_processing_evaluation_criteria:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Post Processing Evaluation Criteria
+          description: Post-interview evaluation criteria.
+        expected_answer:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expected Answer
+          description: Expected answer (SMS).
+        expected_value:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Expected Value
+          description: Expected numeric value (SMS).
+        is_dealbreaker:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Dealbreaker
+          description: Dealbreaker flag (SMS).
+        answer:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Answer
+          description: Expected answer (form).
+        is_knockout:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Knockout
+          description: Knockout flag (form).
+        dropdown_values:
+          anyOf:
+          - items:
+              additionalProperties:
+                type: string
+              type: object
+            type: array
+          - type: 'null'
+          title: Dropdown Values
+          description: Dropdown options.
+        is_answer_mandated:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Answer Mandated
+          description: Require answer (form).
+        mcq_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Mcq Type
+          description: MCQ type (form).
+        operator:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Operator
+          description: Validation operator (form).
+        file_types:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: File Types
+          description: Allowed file types (form).
+        allow_multiple_files:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Allow Multiple Files
+          description: Multiple files (form).
+        slider_min:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Slider Min
+          description: Slider min (form).
+        slider_max:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Slider Max
+          description: Slider max (form).
+        slider_step:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Slider Step
+          description: Slider step (form).
+        response_format:
+          anyOf:
+          - type: string
+            enum:
+            - text
+            - freeform
+            - date
+            - number
+          - type: 'null'
+          title: Response Format
+          description: 'Response format for voice_tags: ''text'', ''freeform'', ''date'', or ''number''.'
+        instructions:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Instructions
+          description: Instructions (voice_tags).
+        options:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Options
+          description: Options (voice_tags).
+        structured_config:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Structured Config
+          description: Advanced structured configuration (voice). Opaque key-value object forwarded to the AI interviewer.
+      type: object
+      required:
+      - modality
+      - text
+      title: CreateQuestionRequest
+      description: 'Request body for creating a new question or criterion.
+
+
+        The ``modality`` field determines the question type. Only fields
+
+        relevant to the chosen modality need to be provided.'
+    APIError:
+      properties:
+        type:
+          type: string
+          title: Type
+          description: Error category
+          examples:
+          - invalid_request_error
         code:
           type: string
           title: Code
           description: Machine-readable error code
           examples:
-          - invalid_param
+          - validation_error
         message:
           type: string
           title: Message
-          description: Human-readable explanation
+          description: Human-readable summary
           examples:
-          - title must be between 3 and 200 characters
+          - The request body failed validation
         param:
           anyOf:
           - type: string
           - type: 'null'
           title: Param
-          description: Parameter that caused the error
-          examples:
-          - title
+          description: Top-level parameter that caused the error
+        doc_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Doc Url
+          description: Link to relevant documentation
+        errors:
+          items:
+            $ref: '#/components/schemas/APIErrorDetail'
+          type: array
+          title: Errors
+          description: Detailed per-field validation errors
       type: object
       required:
+      - type
       - code
       - message
-      title: APIErrorDetail
+      title: APIError
+    ReorderQuestionsRequest:
+      properties:
+        modality:
+          type: string
+          enum:
+          - voice
+          - sms
+          - form
+          - resume_eligibility
+          - resume_scoring
+          - voice_tags
+          title: Modality
+          description: 'Modality to reorder: voice, sms, form, resume_eligibility, resume_scoring, voice_tags.'
+          examples:
+          - voice
+        order:
+          items:
+            type: string
+          type: array
+          title: Order
+          description: Ordered list of question IDs. Every active question for the specified modality must be included.
+          examples:
+          - - Q1
+            - Q3
+            - Q2
+      type: object
+      required:
+      - modality
+      - order
+      title: ReorderQuestionsRequest
+      description: Request body for reordering questions within a modality.
+    SingleResponse_QuestionResponse_:
+      properties:
+        data:
+          $ref: '#/components/schemas/QuestionResponse'
+        meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+          description: Optional metadata. Shape varies by endpoint.
+      type: object
+      required:
+      - data
+      title: SingleResponse[QuestionResponse]
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    PaginationMeta:
+      properties:
+        has_more:
+          type: boolean
+          title: Has More
+          description: Whether more results exist beyond this page
+        total_count:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Count
+          description: Total number of results (if available)
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: URL of this resource
+      type: object
+      required:
+      - has_more
+      title: PaginationMeta
+    ListResponse_QuestionResponse_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/QuestionResponse'
+          type: array
+          title: Data
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      type: object
+      required:
+      - data
+      - pagination
+      title: ListResponse[QuestionResponse]
     UpdateQuestionRequest:
       properties:
         text:
@@ -722,28 +1056,54 @@ components:
 
 
         Only provided fields are modified; omitted fields remain unchanged.'
-    PaginationMeta:
+    ValidationError:
       properties:
-        has_more:
-          type: boolean
-          title: Has More
-          description: Whether more results exist beyond this page
-        total_count:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Total Count
-          description: Total number of results (if available)
-        url:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    APIErrorDetail:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Machine-readable error code
+          examples:
+          - invalid_param
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation
+          examples:
+          - title must be between 3 and 200 characters
+        param:
           anyOf:
           - type: string
           - type: 'null'
-          title: Url
-          description: URL of this resource
+          title: Param
+          description: Parameter that caused the error
+          examples:
+          - title
       type: object
       required:
-      - has_more
-      title: PaginationMeta
+      - code
+      - message
+      title: APIErrorDetail
     QuestionResponse:
       properties:
         object:
@@ -993,366 +1353,6 @@ components:
         resume_eligibility, resume_scoring, voice_tags). Fields that are not
 
         applicable to a given modality will be ``null``.'
-    SingleResponse_QuestionResponse_:
-      properties:
-        data:
-          $ref: '#/components/schemas/QuestionResponse'
-        meta:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Meta
-          description: Optional metadata. Shape varies by endpoint.
-      type: object
-      required:
-      - data
-      title: SingleResponse[QuestionResponse]
-    APIError:
-      properties:
-        type:
-          type: string
-          title: Type
-          description: Error category
-          examples:
-          - invalid_request_error
-        code:
-          type: string
-          title: Code
-          description: Machine-readable error code
-          examples:
-          - validation_error
-        message:
-          type: string
-          title: Message
-          description: Human-readable summary
-          examples:
-          - The request body failed validation
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Param
-          description: Top-level parameter that caused the error
-        doc_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Doc Url
-          description: Link to relevant documentation
-        errors:
-          items:
-            $ref: '#/components/schemas/APIErrorDetail'
-          type: array
-          title: Errors
-          description: Detailed per-field validation errors
-      type: object
-      required:
-      - type
-      - code
-      - message
-      title: APIError
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    ReorderQuestionsRequest:
-      properties:
-        modality:
-          type: string
-          enum:
-          - voice
-          - sms
-          - form
-          - resume_eligibility
-          - resume_scoring
-          - voice_tags
-          title: Modality
-          description: 'Modality to reorder: voice, sms, form, resume_eligibility, resume_scoring, voice_tags.'
-          examples:
-          - voice
-        order:
-          items:
-            type: string
-          type: array
-          title: Order
-          description: Ordered list of question IDs. Every active question for the specified modality must be included.
-          examples:
-          - - Q1
-            - Q3
-            - Q2
-      type: object
-      required:
-      - modality
-      - order
-      title: ReorderQuestionsRequest
-      description: Request body for reordering questions within a modality.
-    APIErrorResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/APIError'
-      type: object
-      required:
-      - error
-      title: APIErrorResponse
-    ListResponse_QuestionResponse_:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/QuestionResponse'
-          type: array
-          title: Data
-        pagination:
-          $ref: '#/components/schemas/PaginationMeta'
-      type: object
-      required:
-      - data
-      - pagination
-      title: ListResponse[QuestionResponse]
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    CreateQuestionRequest:
-      properties:
-        modality:
-          type: string
-          enum:
-          - voice
-          - sms
-          - form
-          - resume_eligibility
-          - resume_scoring
-          - voice_tags
-          title: Modality
-          description: 'Question modality: voice, sms, form, resume_eligibility, resume_scoring, voice_tags.'
-          examples:
-          - voice
-        text:
-          type: string
-          title: Text
-          description: The question text, criterion text, or tag name.
-          examples:
-          - Tell me about a challenging project you led.
-        evaluation_criteria:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Evaluation Criteria
-          description: Evaluation criteria.
-        score_of_1:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Score Of 1
-          description: Score-1 description.
-        score_of_5:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Score Of 5
-          description: Score-5 description.
-        score_weight:
-          anyOf:
-          - type: integer
-            maximum: 10.0
-            minimum: 1.0
-          - type: 'null'
-          title: Score Weight
-          description: Importance weight for scoring (1–10).
-        not_scored:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Not Scored
-          description: Ask but don't score.
-        question_type:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Question Type
-          description: Question format.
-        min_follow_ups:
-          anyOf:
-          - type: integer
-            minimum: 0.0
-          - type: 'null'
-          title: Min Follow Ups
-          description: Min follow-ups.
-        max_follow_ups:
-          anyOf:
-          - type: integer
-            minimum: 0.0
-          - type: 'null'
-          title: Max Follow Ups
-          description: Max follow-ups.
-        additional_instructions:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Additional Instructions
-          description: Per-question instructions.
-        post_processing_evaluation_criteria:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Post Processing Evaluation Criteria
-          description: Post-interview evaluation criteria.
-        expected_answer:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Expected Answer
-          description: Expected answer (SMS).
-        expected_value:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Expected Value
-          description: Expected numeric value (SMS).
-        is_dealbreaker:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Is Dealbreaker
-          description: Dealbreaker flag (SMS).
-        answer:
-          anyOf:
-          - {}
-          - type: 'null'
-          title: Answer
-          description: Expected answer (form).
-        is_knockout:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Is Knockout
-          description: Knockout flag (form).
-        dropdown_values:
-          anyOf:
-          - items:
-              additionalProperties:
-                type: string
-              type: object
-            type: array
-          - type: 'null'
-          title: Dropdown Values
-          description: Dropdown options.
-        is_answer_mandated:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Is Answer Mandated
-          description: Require answer (form).
-        mcq_type:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Mcq Type
-          description: MCQ type (form).
-        operator:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Operator
-          description: Validation operator (form).
-        file_types:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: File Types
-          description: Allowed file types (form).
-        allow_multiple_files:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Allow Multiple Files
-          description: Multiple files (form).
-        slider_min:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Slider Min
-          description: Slider min (form).
-        slider_max:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Slider Max
-          description: Slider max (form).
-        slider_step:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Slider Step
-          description: Slider step (form).
-        response_format:
-          anyOf:
-          - type: string
-            enum:
-            - text
-            - freeform
-            - date
-            - number
-          - type: 'null'
-          title: Response Format
-          description: 'Response format for voice_tags: ''text'', ''freeform'', ''date'', or ''number''.'
-        instructions:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Instructions
-          description: Instructions (voice_tags).
-        options:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Options
-          description: Options (voice_tags).
-        structured_config:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Structured Config
-          description: Advanced structured configuration (voice). Opaque key-value object forwarded to the AI interviewer.
-      type: object
-      required:
-      - modality
-      - text
-      title: CreateQuestionRequest
-      description: 'Request body for creating a new question or criterion.
-
-
-        The ``modality`` field determines the question type. Only fields
-
-        relevant to the chosen modality need to be provided.'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

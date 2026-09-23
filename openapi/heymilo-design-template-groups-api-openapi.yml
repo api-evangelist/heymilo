@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: HeyMilo Public ATS Design Template Groups API
+  title: HeyMilo Public Design Template Groups API
   description: External developer-facing API for HeyMilo. Create interviewers with agentic workflows, ingest candidates, retrieve interview results, and manage workspace resources.
   version: 2.0.0
 servers:
@@ -167,48 +167,14 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    SingleResponse_DesignTemplateGroupResponse_:
+    APIErrorResponse:
       properties:
-        data:
-          $ref: '#/components/schemas/DesignTemplateGroupResponse'
-        meta:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Meta
-          description: Optional metadata. Shape varies by endpoint.
+        error:
+          $ref: '#/components/schemas/APIError'
       type: object
       required:
-      - data
-      title: SingleResponse[DesignTemplateGroupResponse]
-    APIErrorDetail:
-      properties:
-        code:
-          type: string
-          title: Code
-          description: Machine-readable error code
-          examples:
-          - invalid_param
-        message:
-          type: string
-          title: Message
-          description: Human-readable explanation
-          examples:
-          - title must be between 3 and 200 characters
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Param
-          description: Parameter that caused the error
-          examples:
-          - title
-      type: object
-      required:
-      - code
-      - message
-      title: APIErrorDetail
+      - error
+      title: APIErrorResponse
     APIError:
       properties:
         type:
@@ -253,6 +219,52 @@ components:
       - code
       - message
       title: APIError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    SingleResponse_DesignTemplateGroupResponse_:
+      properties:
+        data:
+          $ref: '#/components/schemas/DesignTemplateGroupResponse'
+        meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+          description: Optional metadata. Shape varies by endpoint.
+      type: object
+      required:
+      - data
+      title: SingleResponse[DesignTemplateGroupResponse]
+    PaginationMeta:
+      properties:
+        has_more:
+          type: boolean
+          title: Has More
+          description: Whether more results exist beyond this page
+        total_count:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Count
+          description: Total number of results (if available)
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: URL of this resource
+      type: object
+      required:
+      - has_more
+      title: PaginationMeta
     ValidationError:
       properties:
         loc:
@@ -274,6 +286,47 @@ components:
       - msg
       - type
       title: ValidationError
+    ListResponse_DesignTemplateGroupResponse_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/DesignTemplateGroupResponse'
+          type: array
+          title: Data
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      type: object
+      required:
+      - data
+      - pagination
+      title: ListResponse[DesignTemplateGroupResponse]
+    APIErrorDetail:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Machine-readable error code
+          examples:
+          - invalid_param
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation
+          examples:
+          - title must be between 3 and 200 characters
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Param
+          description: Parameter that caused the error
+          examples:
+          - title
+      type: object
+      required:
+      - code
+      - message
+      title: APIErrorDetail
     DesignTemplateGroupResponse:
       properties:
         object:
@@ -334,59 +387,6 @@ components:
         Template groups map page types (e.g. ''welcome_page'') to specific
 
         design template IDs.'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ListResponse_DesignTemplateGroupResponse_:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/DesignTemplateGroupResponse'
-          type: array
-          title: Data
-        pagination:
-          $ref: '#/components/schemas/PaginationMeta'
-      type: object
-      required:
-      - data
-      - pagination
-      title: ListResponse[DesignTemplateGroupResponse]
-    APIErrorResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/APIError'
-      type: object
-      required:
-      - error
-      title: APIErrorResponse
-    PaginationMeta:
-      properties:
-        has_more:
-          type: boolean
-          title: Has More
-          description: Whether more results exist beyond this page
-        total_count:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Total Count
-          description: Total number of results (if available)
-        url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Url
-          description: URL of this resource
-      type: object
-      required:
-      - has_more
-      title: PaginationMeta
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

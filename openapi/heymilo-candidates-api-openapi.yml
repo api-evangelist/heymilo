@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: HeyMilo Public ATS Candidates API
+  title: HeyMilo Public Candidates API
   description: External developer-facing API for HeyMilo. Create interviewers with agentic workflows, ingest candidates, retrieve interview results, and manage workspace resources.
   version: 2.0.0
 servers:
@@ -435,224 +435,28 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    BulkIngestCandidateResponseItem:
+    PaginationMeta:
       properties:
-        object:
-          type: string
-          const: candidate
-          title: Object
-          description: Object type identifier.
-          default: candidate
-        interview_id:
-          type: string
-          title: Interview Id
-          description: Unique interview identifier for this candidate-posting pair.
-          examples:
-          - D536A69A4090E13F
-        interview_url:
-          type: string
-          title: Interview Url
-          description: URL the candidate uses to access the interview.
-          examples:
-          - https://candidates.heymilo.io/acme/i/D536A69A4090E13F
-        metadata:
-          anyOf:
-          - additionalProperties:
-              type: string
-            type: object
-          - type: 'null'
-          title: Metadata
-          description: Set of key-value pairs for storing additional information. Up to 50 keys, each key max 40 chars, each value max 500 chars.
-          examples:
-          - ats_stage: phone_screen
-            external_id: candidate_xyz
-      type: object
-      required:
-      - interview_id
-      - interview_url
-      title: BulkIngestCandidateResponseItem
-      description: A single item in the bulk ingest response.
-    APIError:
-      properties:
-        type:
-          type: string
-          title: Type
-          description: Error category
-          examples:
-          - invalid_request_error
-        code:
-          type: string
-          title: Code
-          description: Machine-readable error code
-          examples:
-          - validation_error
-        message:
-          type: string
-          title: Message
-          description: Human-readable summary
-          examples:
-          - The request body failed validation
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Param
-          description: Top-level parameter that caused the error
-        doc_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Doc Url
-          description: Link to relevant documentation
-        errors:
-          items:
-            $ref: '#/components/schemas/APIErrorDetail'
-          type: array
-          title: Errors
-          description: Detailed per-field validation errors
-      type: object
-      required:
-      - type
-      - code
-      - message
-      title: APIError
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    AgentFormSummary:
-      properties:
-        is_complete:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Is Complete
-          description: Whether the candidate completed the form.
-        is_eligible:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Is Eligible
-          description: Whether the candidate passed all knockout questions.
-        questions_answered:
+        has_more:
+          type: boolean
+          title: Has More
+          description: Whether more results exist beyond this page
+        total_count:
           anyOf:
           - type: integer
           - type: 'null'
-          title: Questions Answered
-          description: Number of questions answered.
-          examples:
-          - 5
-        total_questions:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Total Questions
-          description: Total number of questions on the form.
-          examples:
-          - 7
-      type: object
-      title: AgentFormSummary
-      description: Form screening summary metrics.
-    IngestCandidateResponse:
-      properties:
-        object:
-          type: string
-          const: candidate
-          title: Object
-          description: Object type identifier.
-          default: candidate
-        interview_id:
-          type: string
-          title: Interview Id
-          description: Unique interview identifier for this candidate-posting pair.
-          examples:
-          - D536A69A4090E13F
-        interview_url:
-          type: string
-          title: Interview Url
-          description: URL the candidate uses to access the interview.
-          examples:
-          - https://candidates.heymilo.io/acme/i/D536A69A4090E13F
-        posting_id:
-          type: string
-          title: Posting Id
-          description: ID of the posting this candidate was ingested into.
-          examples:
-          - 13D77095
-        candidate:
-          anyOf:
-          - $ref: '#/components/schemas/CandidateResponse'
-          - type: 'null'
-          description: Full candidate resource (receipt pattern).
-      type: object
-      required:
-      - interview_id
-      - interview_url
-      - posting_id
-      title: IngestCandidateResponse
-      description: Response after successfully ingesting a candidate.
-    CandidateIngestRequest:
-      properties:
-        name:
-          type: string
-          title: Name
-          description: Candidate full name
-          examples:
-          - Jane Doe
-        email:
-          type: string
-          title: Email
-          description: Candidate email address
-          examples:
-          - jane.doe@example.com
-        phone_number:
+          title: Total Count
+          description: Total number of results (if available)
+        url:
           anyOf:
           - type: string
           - type: 'null'
-          title: Phone Number
-          description: Candidate phone number (E.164 format)
-          examples:
-          - '+12065551234'
-        metadata:
-          anyOf:
-          - additionalProperties:
-              type: string
-            type: object
-          - type: 'null'
-          title: Metadata
-          description: Set of key-value pairs for storing additional information on the candidate. Up to 50 keys, each key max 40 chars, each value max 500 chars.
-          examples:
-          - ats_stage: phone_screen
-            external_id: candidate_xyz
-        data:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Data
-          description: Additional candidate data
+          title: Url
+          description: URL of this resource
       type: object
       required:
-      - name
-      - email
-      title: CandidateIngestRequest
+      - has_more
+      title: PaginationMeta
     WorkflowStepStatus:
       properties:
         step_id:
@@ -709,75 +513,123 @@ components:
       - completed
       title: WorkflowStepStatus
       description: Status of a single workflow step for a candidate.
-    HTTPValidationError:
+    BulkIngestCandidateResponseItem:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    AgentSMSSummary:
-      properties:
-        is_eligible:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Is Eligible
-          description: Whether the candidate passed SMS screening.
-        criteria_passed:
-          items:
-            type: string
-          type: array
-          title: Criteria Passed
-          description: Criteria the candidate passed.
-        criteria_failed:
-          items:
-            type: string
-          type: array
-          title: Criteria Failed
-          description: Criteria the candidate failed.
-        messages_sent:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Messages Sent
-          description: Total messages sent by the agent.
+        object:
+          type: string
+          const: candidate
+          title: Object
+          description: Object type identifier.
+          default: candidate
+        interview_id:
+          type: string
+          title: Interview Id
+          description: Unique interview identifier for this candidate-posting pair.
           examples:
-          - 8
+          - D536A69A4090E13F
+        interview_url:
+          type: string
+          title: Interview Url
+          description: URL the candidate uses to access the interview.
+          examples:
+          - https://candidates.heymilo.io/acme/i/D536A69A4090E13F
+        metadata:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Metadata
+          description: Set of key-value pairs for storing additional information. Up to 50 keys, each key max 40 chars, each value max 500 chars.
+          examples:
+          - ats_stage: phone_screen
+            external_id: candidate_xyz
       type: object
-      title: AgentSMSSummary
-      description: SMS screening summary metrics.
-    SingleResponse_IngestCandidateResponse_:
+      required:
+      - interview_id
+      - interview_url
+      title: BulkIngestCandidateResponseItem
+      description: A single item in the bulk ingest response.
+    APIErrorDetail:
       properties:
+        code:
+          type: string
+          title: Code
+          description: Machine-readable error code
+          examples:
+          - invalid_param
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation
+          examples:
+          - title must be between 3 and 200 characters
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Param
+          description: Parameter that caused the error
+          examples:
+          - title
+      type: object
+      required:
+      - code
+      - message
+      title: APIErrorDetail
+    CandidateIngestRequest:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: Candidate full name
+          examples:
+          - Jane Doe
+        email:
+          type: string
+          title: Email
+          description: Candidate email address
+          examples:
+          - jane.doe@example.com
+        phone_number:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone Number
+          description: Candidate phone number (E.164 format)
+          examples:
+          - '+12065551234'
+        metadata:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Metadata
+          description: Set of key-value pairs for storing additional information on the candidate. Up to 50 keys, each key max 40 chars, each value max 500 chars.
+          examples:
+          - ats_stage: phone_screen
+            external_id: candidate_xyz
         data:
-          $ref: '#/components/schemas/IngestCandidateResponse'
-        meta:
           anyOf:
           - additionalProperties: true
             type: object
           - type: 'null'
-          title: Meta
-          description: Optional metadata. Shape varies by endpoint.
-      type: object
-      required:
-      - data
-      title: SingleResponse[IngestCandidateResponse]
-    ListResponse_CandidateResponse_:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/CandidateResponse'
-          type: array
           title: Data
-        pagination:
-          $ref: '#/components/schemas/PaginationMeta'
+          description: Additional candidate data
       type: object
       required:
-      - data
-      - pagination
-      title: ListResponse[CandidateResponse]
+      - name
+      - email
+      title: CandidateIngestRequest
+    APIErrorResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/APIError'
+      type: object
+      required:
+      - error
+      title: APIErrorResponse
     CandidateResponse:
       properties:
         object:
@@ -910,66 +762,41 @@ components:
         candidate-posting pair) and a ``candidate_id`` (shared across
 
         postings within a workspace).'
-    AgentResumeSummary:
+    HTTPValidationError:
       properties:
-        resume_score:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Resume Score
-          description: Resume match score.
-          examples:
-          - 3.8
-        is_eligible:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Is Eligible
-          description: Whether the candidate meets eligibility criteria.
-        resume_link:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Resume Link
-          description: URL to the uploaded resume.
-          examples:
-          - https://cdn.heymilo.io/resumes/abc123.pdf
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-      title: AgentResumeSummary
-      description: Resume screening summary metrics.
-    APIErrorResponse:
+      title: HTTPValidationError
+    AsyncIngestResponse:
       properties:
-        error:
-          $ref: '#/components/schemas/APIError'
+        object:
+          type: string
+          const: ingestion
+          title: Object
+          description: Object type identifier.
+          default: ingestion
+        ingestion_id:
+          type: string
+          title: Ingestion Id
+          description: Unique identifier for this ingestion job.
+          examples:
+          - intake_abc123
+        status:
+          type: string
+          title: Status
+          description: Status of the ingestion job.
+          default: queued
+          examples:
+          - queued
       type: object
       required:
-      - error
-      title: APIErrorResponse
-    AgentSummary:
-      properties:
-        resume:
-          anyOf:
-          - $ref: '#/components/schemas/AgentResumeSummary'
-          - type: 'null'
-          description: Resume screening summary.
-        web_interview:
-          anyOf:
-          - $ref: '#/components/schemas/AgentWebInterviewSummary'
-          - type: 'null'
-          description: Web interview summary.
-        sms:
-          anyOf:
-          - $ref: '#/components/schemas/AgentSMSSummary'
-          - type: 'null'
-          description: SMS screening summary.
-        form:
-          anyOf:
-          - $ref: '#/components/schemas/AgentFormSummary'
-          - type: 'null'
-          description: Form screening summary.
-      type: object
-      title: AgentSummary
-      description: Per-agent-type summary metrics for a candidate.
+      - ingestion_id
+      title: AsyncIngestResponse
+      description: Response after queuing an async ingest job.
     CandidateWorkflow:
       properties:
         steps:
@@ -998,24 +825,33 @@ components:
       - all_complete
       title: CandidateWorkflow
       description: Overall workflow progress for a candidate.
-    SingleResponse_list_BulkIngestCandidateResponseItem__:
+    BulkCandidateIngestRequest:
       properties:
         data:
           items:
-            $ref: '#/components/schemas/BulkIngestCandidateResponseItem'
+            $ref: '#/components/schemas/CandidateIngestRequest'
           type: array
+          minItems: 1
           title: Data
-        meta:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Meta
-          description: Optional metadata. Shape varies by endpoint.
+          description: List of candidates to ingest
       type: object
       required:
       - data
-      title: SingleResponse[list[BulkIngestCandidateResponseItem]]
+      title: BulkCandidateIngestRequest
+    ListResponse_CandidateResponse_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/CandidateResponse'
+          type: array
+          title: Data
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      type: object
+      required:
+      - data
+      - pagination
+      title: ListResponse[CandidateResponse]
     AgentWebInterviewSummary:
       properties:
         score:
@@ -1047,81 +883,258 @@ components:
       type: object
       title: AgentWebInterviewSummary
       description: Web interview summary metrics.
-    PaginationMeta:
+    APIError:
       properties:
-        has_more:
-          type: boolean
-          title: Has More
-          description: Whether more results exist beyond this page
-        total_count:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Total Count
-          description: Total number of results (if available)
-        url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Url
-          description: URL of this resource
-      type: object
-      required:
-      - has_more
-      title: PaginationMeta
-    APIErrorDetail:
-      properties:
+        type:
+          type: string
+          title: Type
+          description: Error category
+          examples:
+          - invalid_request_error
         code:
           type: string
           title: Code
           description: Machine-readable error code
           examples:
-          - invalid_param
+          - validation_error
         message:
           type: string
           title: Message
-          description: Human-readable explanation
+          description: Human-readable summary
           examples:
-          - title must be between 3 and 200 characters
+          - The request body failed validation
         param:
           anyOf:
           - type: string
           - type: 'null'
           title: Param
-          description: Parameter that caused the error
-          examples:
-          - title
+          description: Top-level parameter that caused the error
+        doc_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Doc Url
+          description: Link to relevant documentation
+        errors:
+          items:
+            $ref: '#/components/schemas/APIErrorDetail'
+          type: array
+          title: Errors
+          description: Detailed per-field validation errors
       type: object
       required:
+      - type
       - code
       - message
-      title: APIErrorDetail
-    AsyncIngestResponse:
+      title: APIError
+    AgentSummary:
+      properties:
+        resume:
+          anyOf:
+          - $ref: '#/components/schemas/AgentResumeSummary'
+          - type: 'null'
+          description: Resume screening summary.
+        web_interview:
+          anyOf:
+          - $ref: '#/components/schemas/AgentWebInterviewSummary'
+          - type: 'null'
+          description: Web interview summary.
+        sms:
+          anyOf:
+          - $ref: '#/components/schemas/AgentSMSSummary'
+          - type: 'null'
+          description: SMS screening summary.
+        form:
+          anyOf:
+          - $ref: '#/components/schemas/AgentFormSummary'
+          - type: 'null'
+          description: Form screening summary.
+      type: object
+      title: AgentSummary
+      description: Per-agent-type summary metrics for a candidate.
+    AgentFormSummary:
+      properties:
+        is_complete:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Complete
+          description: Whether the candidate completed the form.
+        is_eligible:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Eligible
+          description: Whether the candidate passed all knockout questions.
+        questions_answered:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Questions Answered
+          description: Number of questions answered.
+          examples:
+          - 5
+        total_questions:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Questions
+          description: Total number of questions on the form.
+          examples:
+          - 7
+      type: object
+      title: AgentFormSummary
+      description: Form screening summary metrics.
+    SingleResponse_IngestCandidateResponse_:
+      properties:
+        data:
+          $ref: '#/components/schemas/IngestCandidateResponse'
+        meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+          description: Optional metadata. Shape varies by endpoint.
+      type: object
+      required:
+      - data
+      title: SingleResponse[IngestCandidateResponse]
+    SingleResponse_list_BulkIngestCandidateResponseItem__:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/BulkIngestCandidateResponseItem'
+          type: array
+          title: Data
+        meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+          description: Optional metadata. Shape varies by endpoint.
+      type: object
+      required:
+      - data
+      title: SingleResponse[list[BulkIngestCandidateResponseItem]]
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    IngestCandidateResponse:
       properties:
         object:
           type: string
-          const: ingestion
+          const: candidate
           title: Object
           description: Object type identifier.
-          default: ingestion
-        ingestion_id:
+          default: candidate
+        interview_id:
           type: string
-          title: Ingestion Id
-          description: Unique identifier for this ingestion job.
+          title: Interview Id
+          description: Unique interview identifier for this candidate-posting pair.
           examples:
-          - intake_abc123
-        status:
+          - D536A69A4090E13F
+        interview_url:
           type: string
-          title: Status
-          description: Status of the ingestion job.
-          default: queued
+          title: Interview Url
+          description: URL the candidate uses to access the interview.
           examples:
-          - queued
+          - https://candidates.heymilo.io/acme/i/D536A69A4090E13F
+        posting_id:
+          type: string
+          title: Posting Id
+          description: ID of the posting this candidate was ingested into.
+          examples:
+          - 13D77095
+        candidate:
+          anyOf:
+          - $ref: '#/components/schemas/CandidateResponse'
+          - type: 'null'
+          description: Full candidate resource (receipt pattern).
       type: object
       required:
-      - ingestion_id
-      title: AsyncIngestResponse
-      description: Response after queuing an async ingest job.
+      - interview_id
+      - interview_url
+      - posting_id
+      title: IngestCandidateResponse
+      description: Response after successfully ingesting a candidate.
+    AgentSMSSummary:
+      properties:
+        is_eligible:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Eligible
+          description: Whether the candidate passed SMS screening.
+        criteria_passed:
+          items:
+            type: string
+          type: array
+          title: Criteria Passed
+          description: Criteria the candidate passed.
+        criteria_failed:
+          items:
+            type: string
+          type: array
+          title: Criteria Failed
+          description: Criteria the candidate failed.
+        messages_sent:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Messages Sent
+          description: Total messages sent by the agent.
+          examples:
+          - 8
+      type: object
+      title: AgentSMSSummary
+      description: SMS screening summary metrics.
+    AgentResumeSummary:
+      properties:
+        resume_score:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Resume Score
+          description: Resume match score.
+          examples:
+          - 3.8
+        is_eligible:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Eligible
+          description: Whether the candidate meets eligibility criteria.
+        resume_link:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Resume Link
+          description: URL to the uploaded resume.
+          examples:
+          - https://cdn.heymilo.io/resumes/abc123.pdf
+      type: object
+      title: AgentResumeSummary
+      description: Resume screening summary metrics.
     SingleResponse_AsyncIngestResponse_:
       properties:
         data:
@@ -1137,19 +1150,6 @@ components:
       required:
       - data
       title: SingleResponse[AsyncIngestResponse]
-    BulkCandidateIngestRequest:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/CandidateIngestRequest'
-          type: array
-          minItems: 1
-          title: Data
-          description: List of candidates to ingest
-      type: object
-      required:
-      - data
-      title: BulkCandidateIngestRequest
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

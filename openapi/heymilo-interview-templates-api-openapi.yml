@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: HeyMilo Public ATS Interview Templates API
+  title: HeyMilo Public Interview Templates API
   description: External developer-facing API for HeyMilo. Create interviewers with agentic workflows, ingest candidates, retrieve interview results, and manage workspace resources.
   version: 2.0.0
 servers:
@@ -167,33 +167,14 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    APIErrorDetail:
+    APIErrorResponse:
       properties:
-        code:
-          type: string
-          title: Code
-          description: Machine-readable error code
-          examples:
-          - invalid_param
-        message:
-          type: string
-          title: Message
-          description: Human-readable explanation
-          examples:
-          - title must be between 3 and 200 characters
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Param
-          description: Parameter that caused the error
-          examples:
-          - title
+        error:
+          $ref: '#/components/schemas/APIError'
       type: object
       required:
-      - code
-      - message
-      title: APIErrorDetail
+      - error
+      title: APIErrorResponse
     ListResponse_InterviewTemplateResponse_:
       properties:
         data:
@@ -208,6 +189,21 @@ components:
       - data
       - pagination
       title: ListResponse[InterviewTemplateResponse]
+    SingleResponse_InterviewTemplateResponse_:
+      properties:
+        data:
+          $ref: '#/components/schemas/InterviewTemplateResponse'
+        meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+          description: Optional metadata. Shape varies by endpoint.
+      type: object
+      required:
+      - data
+      title: SingleResponse[InterviewTemplateResponse]
     APIError:
       properties:
         type:
@@ -252,6 +248,37 @@ components:
       - code
       - message
       title: APIError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    PaginationMeta:
+      properties:
+        has_more:
+          type: boolean
+          title: Has More
+          description: Whether more results exist beyond this page
+        total_count:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Count
+          description: Total number of results (if available)
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: URL of this resource
+      type: object
+      required:
+      - has_more
+      title: PaginationMeta
     ValidationError:
       properties:
         loc:
@@ -273,30 +300,6 @@ components:
       - msg
       - type
       title: ValidationError
-    SingleResponse_InterviewTemplateResponse_:
-      properties:
-        data:
-          $ref: '#/components/schemas/InterviewTemplateResponse'
-        meta:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Meta
-          description: Optional metadata. Shape varies by endpoint.
-      type: object
-      required:
-      - data
-      title: SingleResponse[InterviewTemplateResponse]
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     InterviewTemplateResponse:
       properties:
         object:
@@ -373,36 +376,33 @@ components:
         onto new postings or used as the seed for new agents. Each template
 
         references its blueprint posting via ``posting_id``.'
-    APIErrorResponse:
+    APIErrorDetail:
       properties:
-        error:
-          $ref: '#/components/schemas/APIError'
-      type: object
-      required:
-      - error
-      title: APIErrorResponse
-    PaginationMeta:
-      properties:
-        has_more:
-          type: boolean
-          title: Has More
-          description: Whether more results exist beyond this page
-        total_count:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Total Count
-          description: Total number of results (if available)
-        url:
+        code:
+          type: string
+          title: Code
+          description: Machine-readable error code
+          examples:
+          - invalid_param
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation
+          examples:
+          - title must be between 3 and 200 characters
+        param:
           anyOf:
           - type: string
           - type: 'null'
-          title: Url
-          description: URL of this resource
+          title: Param
+          description: Parameter that caused the error
+          examples:
+          - title
       type: object
       required:
-      - has_more
-      title: PaginationMeta
+      - code
+      - message
+      title: APIErrorDetail
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

@@ -1,24 +1,7 @@
 {
   "provider": "heymilo",
   "sources": [
-    "heymilo-ats-api-openapi.yml",
-    "heymilo-candidates-api-openapi.yml",
-    "heymilo-design-template-groups-api-openapi.yml",
-    "heymilo-design-templates-api-openapi.yml",
-    "heymilo-domains-api-openapi.yml",
-    "heymilo-email-template-groups-api-openapi.yml",
-    "heymilo-email-templates-api-openapi.yml",
-    "heymilo-health-api-openapi.yml",
-    "heymilo-interview-templates-api-openapi.yml",
-    "heymilo-interviewers-api-openapi.yml",
-    "heymilo-interviews-api-openapi.yml",
-    "heymilo-phone-numbers-api-openapi.yml",
-    "heymilo-questions-api-openapi.yml",
-    "heymilo-schema-discovery-api-openapi.yml",
-    "heymilo-sender-emails-api-openapi.yml",
-    "heymilo-voices-api-openapi.yml",
-    "heymilo-webhooks-api-openapi.yml",
-    "heymilo-workspaces-api-openapi.yml"
+    "_original/heymilo-openapi-original.json"
   ],
   "outputs": [
     "heymilo-ats-api-openapi.yml",
@@ -43,6 +26,32 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "heymilo-openapi-original.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "heymilo-openapi-original.json: declared missing tag: ATS",
+    "heymilo-openapi-original.json: declared missing tag: Health",
+    "heymilo-openapi-original.json: declared missing tag: Schema Discovery",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "heymilo-ats-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "heymilo-candidates-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "heymilo-design-template-groups-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "heymilo-design-templates-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "heymilo-domains-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "heymilo-email-template-groups-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "heymilo-email-templates-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "heymilo-health-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "heymilo-interview-templates-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "heymilo-interviewers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "heymilo-interviews-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "heymilo-phone-numbers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "heymilo-questions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "heymilo-schema-discovery-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "heymilo-sender-emails-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "heymilo-voices-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "heymilo-webhooks-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "heymilo-workspaces-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
