@@ -1,4 +1,4 @@
-# Heymilo
+# HeyMilo
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,6 +64,177 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Heymilo is a company surfaced as a portfolio company of canaan-partners and added to the API Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+HeyMilo AI is an agentic recruiting platform for high-volume hiring teams — staffing agencies, corporate recruiters, BPOs, franchises, and data-annotation operations. It combines candidate sourcing from your ATS, conversational SMS and smart-form pre-screening, resume analysis, and live AI voice and video interviews (with built-in cheat detection), then scores and ranks candidates with analytics, reporting, and fully white-labeled workflows. The HeyMilo Public API (v2.0.0, base https://api.heymilo.ai) exposes programmatic control over interviewers (postings), candidate ingestion, interview data and transcripts, questions, webhooks, templates, voices, phone numbers, domains, and ATS push/resolve — authenticated with an X-API-KEY header and rate limited to 300 requests per minute. A read-only hosted MCP server at https://mcp.heymilo.ai/mcp lets any MCP client query candidates, jobs, and interviews in natural language. HeyMilo raised $6M to scale agentic recruiting and is backed by Canaan Partners.
 
-Backed by: canaan-partners
+**Areas:** Company · Recruiting · Hiring · Human Resources · Artificial Intelligence · AI Agents · Interviewing · Candidate Screening · Voice AI · Webhook · ATS Integration
+
+## HeyMilo on APIs.io
+
+Everything profiled for HeyMilo is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/heymilo/](https://apis.io/providers/heymilo/)** — or go straight to one of the APIs or properties below.
+
+### APIs (18)
+
+- [HeyMilo ATS API](https://apis.io/apis/heymilo/heymilo-ats-api/) — The ATS API from HeyMilo — 4 operation(s) for ats.
+- [HeyMilo Candidates API](https://apis.io/apis/heymilo/heymilo-candidates-api/) — Ingest candidates into an interviewer's workflow (sync or async, single or bulk) and list candidates with their progress.
+- [HeyMilo Design Template Groups API](https://apis.io/apis/heymilo/heymilo-design-template-groups-api/) — View grouped design template configurations.
+- [HeyMilo Design Templates API](https://apis.io/apis/heymilo/heymilo-design-templates-api/) — View design templates that control the candidate interview UI.
+- [HeyMilo Domains API](https://apis.io/apis/heymilo/heymilo-domains-api/) — Manage custom domains for white-labelled interview URLs.
+- [HeyMilo Email Template Groups API](https://apis.io/apis/heymilo/heymilo-email-template-groups-api/) — View grouped email template configurations.
+- [HeyMilo Email Templates API](https://apis.io/apis/heymilo/heymilo-email-templates-api/) — View email templates configured for candidate outreach.
+- [HeyMilo Health API](https://apis.io/apis/heymilo/heymilo-health-api/) — The Health API from HeyMilo — 1 operation(s) for health.
+- [HeyMilo Interview Templates API](https://apis.io/apis/heymilo/heymilo-interview-templates-api/) — View interview templates, reusable agent configurations cloned from a blueprint posting (workflow, questions, criteria, agent settings).
+- [HeyMilo Interviewers API](https://apis.io/apis/heymilo/heymilo-interviewers-api/) — Create, read, update, and manage interviewers. An interviewer (posting) combines job details with an AI agent configuration and agentic workflow.
+- [HeyMilo Interviews API](https://apis.io/apis/heymilo/heymilo-interviews-api/) — Retrieve full interview results (scorecard, transcript, resume evaluation) and manage per-interview metadata.
+- [HeyMilo Phone Numbers API](https://apis.io/apis/heymilo/heymilo-phone-numbers-api/) — List provisioned phone numbers for SMS and voice agents.
+- [HeyMilo Questions API](https://apis.io/apis/heymilo/heymilo-questions-api/) — Create, read, update, delete, and reorder questions and criteria for an interviewer's workflow. Covers all modalities: voice, sms, form, resume_eligibility,…
+- [HeyMilo Schema Discovery API](https://apis.io/apis/heymilo/heymilo-schema-discovery-api/) — The Schema Discovery API from HeyMilo — 2 operation(s) for schema discovery.
+- [HeyMilo Sender Emails API](https://apis.io/apis/heymilo/heymilo-sender-emails-api/) — Manage sender email addresses used for candidate communications.
+- [HeyMilo Voices API](https://apis.io/apis/heymilo/heymilo-voices-api/) — Browse the workspace voice registry for AI interviewer voices.
+- [HeyMilo Webhooks API](https://apis.io/apis/heymilo/heymilo-webhooks-api/) — Register, list, and manage webhook endpoints that receive real-time event notifications.
+- [HeyMilo Workspaces API](https://apis.io/apis/heymilo/heymilo-workspaces-api/) — List the workspaces accessible to the authenticated caller. API-key callers receive a single entry; OAuth callers receive every workspace they are a member of.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [HeyMilo Webhooks](https://apis.io/asyncapis/heymilo/heymilo-webhooks/)
+
+#### Event channels (3)
+
+Individual events and webhooks the provider emits.
+
+- [interview_completed](https://apis.io/channels/heymilo/interview-completed/)
+- [interview_started](https://apis.io/channels/heymilo/interview-started/)
+- [report_available](https://apis.io/channels/heymilo/report-available/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [heymilo](https://apis.io/servers/heymilo/heymilo/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Heymilo Agentic Access](https://apis.io/agentic-access/heymilo/heymilo-agentic-access/)
+
+#### Collections (18)
+
+Postman and Open Collection request collections.
+
+- [HeyMilo Public ATS API](https://apis.io/collections/heymilo/open-heymilo-ats-api/)
+- [HeyMilo Public ATS Candidates API](https://apis.io/collections/heymilo/open-heymilo-candidates-api/)
+- [HeyMilo Public ATS Design Template Groups API](https://apis.io/collections/heymilo/open-heymilo-design-template-groups-api/)
+- [HeyMilo Public ATS Design Templates API](https://apis.io/collections/heymilo/open-heymilo-design-templates-api/)
+- [HeyMilo Public ATS Domains API](https://apis.io/collections/heymilo/open-heymilo-domains-api/)
+- [HeyMilo Public ATS Email Template Groups API](https://apis.io/collections/heymilo/open-heymilo-email-template-groups-api/)
+- [HeyMilo Public ATS Email Templates API](https://apis.io/collections/heymilo/open-heymilo-email-templates-api/)
+- [HeyMilo Public ATS Health API](https://apis.io/collections/heymilo/open-heymilo-health-api/)
+- [HeyMilo Public ATS Interview Templates API](https://apis.io/collections/heymilo/open-heymilo-interview-templates-api/)
+- [HeyMilo Public ATS Interviewers API](https://apis.io/collections/heymilo/open-heymilo-interviewers-api/)
+- [HeyMilo Public ATS Interviews API](https://apis.io/collections/heymilo/open-heymilo-interviews-api/)
+- [HeyMilo Public ATS Phone Numbers API](https://apis.io/collections/heymilo/open-heymilo-phone-numbers-api/)
+- [HeyMilo Public ATS Questions API](https://apis.io/collections/heymilo/open-heymilo-questions-api/)
+- [HeyMilo Public ATS Schema Discovery API](https://apis.io/collections/heymilo/open-heymilo-schema-discovery-api/)
+- [HeyMilo Public ATS Sender Emails API](https://apis.io/collections/heymilo/open-heymilo-sender-emails-api/)
+- [HeyMilo Public ATS Voices API](https://apis.io/collections/heymilo/open-heymilo-voices-api/)
+- [HeyMilo Public ATS Webhooks API](https://apis.io/collections/heymilo/open-heymilo-webhooks-api/)
+- [HeyMilo Public ATS Workspaces API](https://apis.io/collections/heymilo/open-heymilo-workspaces-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Heymilo Openapi Overlay](https://apis.io/overlays/heymilo/heymilo-openapi-overlay/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Heymilo Authentication](https://apis.io/security/heymilo/heymilo-authentication/)
+- [Heymilo Domain Security](https://apis.io/security/heymilo/heymilo-domain-security/)
+- [Heymilo Trust Center](https://apis.io/security/heymilo/heymilo-trust-center/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Heymilo Rate Limits](https://apis.io/rate-limits/heymilo/heymilo-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.heymilo.ai)
+- [Documentation](https://docs.heymilo.ai/documentation/get-started/landing)
+- [Getting started](https://docs.heymilo.ai/documentation/get-started/what-is-heymilo)
+- [API reference](https://docs.heymilo.ai/api-reference)
+- [Sign up](https://www.heymilo.ai/book-a-demo)
+- [Support](https://docs.heymilo.ai)
+- [Blog](https://www.heymilo.ai/blog)
+- [Compliance](https://trust.warden-ai.com/heymilo)
+- [Trust centre](https://trust.heymilo.ai)
+- [Terms of service](https://www.heymilo.ai/terms-of-service)
+- [Privacy policy](https://www.heymilo.ai/privacy-policy)
+- [GitHub](https://github.com/heymilo)
+- [Status](https://status.heymilo.ai)
+
+## API Evangelist rating
+
+**Kin Score 51.1** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.0 |
+| Contract quality | 57.7 |
+| Contract governance | 18.2 |
+| Operational transparency | 39.5 |
+| Developer ergonomics | 60.1 |
+| Access clarity | 46.1 |
+
+**Agent readiness 53.2** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | derived (partial credit) |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | partial |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 27.3** — Employment & Payroll
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/heymilo/](https://apis.io/providers/heymilo/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for HeyMilo: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/heymilo/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
